@@ -38,7 +38,7 @@ public class RuntimeScheduler {
     public static void configScheduler(int runtimeThreadPoolSize) throws Exception {
 
         // The runtimeThreadPoolSize is limited into 8.
-        if (runtimeThreadPoolSize > 8 && runtimeThreadPoolSize < 1) {
+        if (runtimeThreadPoolSize > 8 || runtimeThreadPoolSize < 1) {
             throw new Exception("Incorrect runtimeThreadPoolSize, it is limited from 1 to 8");
         }
         RuntimeScheduler.runtimeThreadPoolSize = runtimeThreadPoolSize;
