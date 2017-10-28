@@ -17,7 +17,6 @@
 package org.dsngroup.orcar.runtime.task;
 
 import org.dsngroup.orcar.orchestrator.Orchestrator;
-import java.util.UUID;
 
 /**
  * A TaskEvent is an event entity for registered in TaskRegistry.
@@ -26,18 +25,15 @@ public class TaskEvent {
 
     private TaskState state;
 
-    // May
-    @Deprecated
-    private UUID taskEventID;
-
     private Orchestrator orchestrator;
 
+    private String taskEventID;
     /**
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
     TaskEvent(Orchestrator orchestrator) {
-        this.taskEventID = UUID.randomUUID();
+        this.taskEventID = orchestrator.getOrchestratorID();
     }
 
     /**
@@ -57,10 +53,10 @@ public class TaskEvent {
     }
 
     /**
-     * Get the unique uuid of this task event.
+     * Get the unique ID of this task event, which is equivalent to the orchestrator.
      * @return taskEventID.
      */
-    public UUID getTaskEventID() {
+    public String getTaskEventID() {
         return taskEventID;
     }
 }

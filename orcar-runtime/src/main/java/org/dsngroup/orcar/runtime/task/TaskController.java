@@ -18,8 +18,6 @@ package org.dsngroup.orcar.runtime.task;
 
 import org.dsngroup.orcar.runtime.RuntimeScheduler;
 
-import java.util.concurrent.Future;
-
 /**
  * The TaskController will route the request task to:
  * 1. {@link RuntimeScheduler}
@@ -43,13 +41,13 @@ public class TaskController {
 
     /**
      * Request a task from a ID.
-     * @param task {@link TaskEvent}
+     * @param orchestratorID the unique orchestratorID.
      * @return {@link TaskState}
      * @throws Exception Throws if the error occurred on get state from registry, it should be catch.
      */
-    public TaskState requestForTaskState(TaskEvent task) throws Exception {
+    public TaskState requestForTaskState(String orchestratorID) throws Exception {
         // TODO: should have a unique alias for request, instead of task.
-        return TaskRegistry.getTaskEventState(task);
+        return TaskRegistry.getTaskEventState(orchestratorID);
     }
 
     public TaskController() {

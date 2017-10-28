@@ -18,7 +18,6 @@ package org.dsngroup.orcar.runtime.task;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.UUID;
 
 /**
  * The TaskRegistry is a handler for record, arrange tasks.
@@ -27,7 +26,7 @@ public class TaskRegistry {
 
     // TODO: What is a proper TaskRegistry data structure?
 
-    private static Map<UUID, TaskEvent> registryMemoryPool = new ConcurrentHashMap<>();
+    private static Map<String, TaskEvent> registryMemoryPool = new ConcurrentHashMap<>();
 
     /**
      * Register a task event into TaskRegistry.
@@ -39,12 +38,15 @@ public class TaskRegistry {
 
     /**
      * Get the current state of an task.
-     * @param task {@link TaskEvent}
+     * @param taskEventID The unique ID of TaskEvent which is also the orchestrator ID.
      * @return {@link TaskState}
      */
-    public static synchronized TaskState getTaskEventState(TaskEvent task) {
+    public static synchronized TaskState getTaskEventState(String taskEventID) throws Exception {
         // TODO: may need a better lock.
-        TaskEvent tmpBindingTaskEvent = registryMemoryPool.get(task.getTaskEventID());
+        TaskEvent tmpBindingTaskEvent = registryMemoryPool.get(taskEventID);
+        if (tmpBindingTaskEvent == null) {
+            throw new Exception("No such task event.");
+        }
         return tmpBindingTaskEvent.getState();
     }
 
