@@ -1,2 +1,2 @@
-# orca
-The orchestrator-style runtime for IoT edge devices
+# orcar
+An orchestrator-style runtime for IoT edge devices
