@@ -20,7 +20,7 @@ package org.dsngroup.orcar.gpio.actuator;
  * The common general actuator interface.
  */
 @FunctionalInterface
-public interface Acuator<T> {
+public interface Actuator<T> {
     /**
      * Do a side effected acuate.
      */

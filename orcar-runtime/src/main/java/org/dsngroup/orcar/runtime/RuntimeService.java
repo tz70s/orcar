@@ -16,6 +16,9 @@
 
 package org.dsngroup.orcar.runtime;
 
+import org.dsngroup.orcar.orchestrator.FunctionalActor;
+import org.dsngroup.orcar.orchestrator.Orchestrator;
+
 /**
  * The RuntimeService is a entry point of orcar.
  */
@@ -25,11 +28,24 @@ public class RuntimeService {
 
     public RuntimeService(RuntimeServiceContext runtimeServiceContext) {
         this.runtimeServiceContext = runtimeServiceContext;
+        // Initialized RuntimeClassLoader.
+        // TODO: Reconsider the initialization place.
+        RuntimeClassLoader.init(runtimeServiceContext.getLocalClassPath());
     }
 
     public RuntimeService serve() {
         // Serve the runtime
         System.out.println("Start a RuntimeService");
+
+        try {
+            Orchestrator orc = new Orchestrator("Actor-01",
+                    (FunctionalActor) RuntimeClassLoader.loadClass("org.dsngroup.orcar.sample.SourceAndPrint"));
+            orc.run();
+        } catch (Exception e) {
+            // Ignore this
+            e.printStackTrace();
+        }
+
         return this;
     }
 

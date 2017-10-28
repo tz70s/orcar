@@ -17,6 +17,8 @@
 package org.dsngroup.orcar.runtime;
 
 import java.util.UUID;
+import java.net.URL;
+import java.io.File;
 
 /**
  * The RuntimeServiceContext records the context(configuration) of the RuntimeService.
@@ -26,12 +28,19 @@ public class RuntimeServiceContext {
 
     private int runtimeThreadPoolSize;
 
+    private URL localClassPath;
     /**
      * Default constructor of RuntimeServiceContext
      */
     public RuntimeServiceContext() {
         this.runtimeServiceID = UUID.randomUUID();
         this.runtimeThreadPoolSize = 4;
+        try {
+            this.localClassPath = new File("/Users/Tzuchiao/workspace/java/orcar/orcar-sample/target/classes/").toURI().toURL();
+        } catch (Exception e) {
+            // TODO: gracefully handle.
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -39,8 +48,22 @@ public class RuntimeServiceContext {
      * @param userDefinedUUID the uuid of the RuntimeService.
      * @param runtimeThreadPoolSize The thread pool size of runtime.
      */
-    public RuntimeServiceContext(UUID userDefinedUUID, int runtimeThreadPoolSize) {
+    public RuntimeServiceContext(UUID userDefinedUUID, int runtimeThreadPoolSize, String localClassPath) {
         this.runtimeServiceID = userDefinedUUID;
         this.runtimeThreadPoolSize = runtimeThreadPoolSize;
+        try {
+            this.localClassPath = new File(localClassPath).toURI().toURL();
+        } catch (Exception e) {
+            // TODO: gracefully handle.
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Getter of localClassPath
+     * @return URL of localClassPath
+     */
+    public URL getLocalClassPath() {
+        return localClassPath;
     }
 }

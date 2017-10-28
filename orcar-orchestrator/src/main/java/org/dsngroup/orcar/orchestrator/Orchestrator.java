@@ -19,6 +19,9 @@ package org.dsngroup.orcar.orchestrator;
 public class Orchestrator {
     private String orchestratorID;
 
+    // TODO: May extends to multiple functions
+    private FunctionalActor orchestratorFuncitons;
+
     /**
      * Get the unique OrchestratorID
      * @return OrchestratorID
@@ -27,7 +30,16 @@ public class Orchestrator {
         return orchestratorID;
     }
 
-    public Orchestrator(String orchestratorID) {
+    public void run() {
+        orchestratorFuncitons.run();
+    }
+
+    /**
+     * The orchestrator constructor.
+     * @param orchestratorID The unique id of an orchestrator.
+     */
+    public Orchestrator(String orchestratorID, FunctionalActor functionalActor) {
         this.orchestratorID = orchestratorID;
+        this.orchestratorFuncitons = functionalActor;
     }
 }

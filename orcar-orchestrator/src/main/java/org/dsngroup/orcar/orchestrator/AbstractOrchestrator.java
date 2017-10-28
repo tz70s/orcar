@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.gpio.actuator;
+package org.dsngroup.orcar.orchestrator;
 
-/**
- * A fake console actuator for used.
- */
-public final class FakeConsoleActuator<T> implements Actuator<T> {
-    /**
-     * Print out the output signal.
-     * @param t signal.
-     */
-    @Override
-    public void actuate(T t) {
-        System.out.println("Ouput signal : " + t);
-    }
+public class AbstractOrchestrator {
+
 }
