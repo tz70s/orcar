@@ -17,7 +17,7 @@
 package org.dsngroup.orcar.runtime;
 
 /**
- * The RuntimeService is a entry point of orca.
+ * The RuntimeService is a entry point of orcar.
  */
 public class RuntimeService {
 
@@ -39,6 +39,5 @@ public class RuntimeService {
 
     public static void main(String[] args) {
         RuntimeService srv = new RuntimeService(new RuntimeServiceContext()).serve();
-        RuntimeServiceContext ctx = srv.getRuntimeServiceContext();
     }
 }

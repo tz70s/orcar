@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-/**
- * This package is the lowest-level runtime of orcar.
- */
 package org.dsngroup.orcar.runtime;
+
+/**
+ * The ControlService is used as a mediator for handling external requests.
+ */
+public class ControlService {
+
+}

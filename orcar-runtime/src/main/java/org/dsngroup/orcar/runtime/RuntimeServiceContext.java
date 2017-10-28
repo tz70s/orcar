@@ -24,11 +24,23 @@ import java.util.UUID;
 public class RuntimeServiceContext {
     private final UUID runtimeServiceID;
 
+    private int runtimeThreadPoolSize;
+
+    /**
+     * Default constructor of RuntimeServiceContext
+     */
     public RuntimeServiceContext() {
-        this.runtimeServiceID = new UUID(20, 5);
+        this.runtimeServiceID = UUID.randomUUID();
+        this.runtimeThreadPoolSize = 4;
     }
 
-    public RuntimeServiceContext(UUID userDefinedUUID) {
+    /**
+     * Overloaded constructor of RuntimeServiceContext.
+     * @param userDefinedUUID the uuid of the RuntimeService.
+     * @param runtimeThreadPoolSize The thread pool size of runtime.
+     */
+    public RuntimeServiceContext(UUID userDefinedUUID, int runtimeThreadPoolSize) {
         this.runtimeServiceID = userDefinedUUID;
+        this.runtimeThreadPoolSize = runtimeThreadPoolSize;
     }
 }

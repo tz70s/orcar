@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-/**
- * This package is the lowest-level runtime of orcar.
- */
-package org.dsngroup.orcar.runtime;
+package org.dsngroup.orcar.orchestrator;
+
+public class Orchestrator {
+    private int orchestratorID;
+
+    public Orchestrator(int orchestratorID) {
+        this.orchestratorID = orchestratorID;
+    }
+}

@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
+package org.dsngroup.orcar.runtime.task;
+
 /**
- * This package is the lowest-level runtime of orcar.
+ * This enum defines the states of a Job.
  */
-package org.dsngroup.orcar.runtime;
+public enum TaskState {
+    PENDING,
+    RUNNING,
+    FAILED,
+    FINISHED;
+}

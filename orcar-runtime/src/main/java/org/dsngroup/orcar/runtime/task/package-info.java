@@ -15,6 +15,7 @@
  */
 
 /**
- * This package is the lowest-level runtime of orcar.
+ * This package is a set of task handler.
  */
-package org.dsngroup.orcar.runtime;
+
+package org.dsngroup.orcar.runtime.task;
