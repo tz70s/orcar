@@ -35,7 +35,17 @@ public class TaskRegistry {
      */
     public static void registerTaskEvent(TaskEvent task) {
         registryMemoryPool.put(task.getTaskEventID(), task);
-        // TODO: notify the scheduler.
+    }
+
+    /**
+     * Get the current state of an task.
+     * @param task {@link TaskEvent}
+     * @return {@link TaskState}
+     */
+    public static synchronized TaskState getTaskEventState(TaskEvent task) {
+        // TODO: may need a better lock.
+        TaskEvent tmpBindingTaskEvent = registryMemoryPool.get(task.getTaskEventID());
+        return tmpBindingTaskEvent.getState();
     }
 
     // Singleton

@@ -26,15 +26,17 @@ public class TaskEvent {
 
     private TaskState state;
 
+    // May
+    @Deprecated
     private UUID taskEventID;
 
     private Orchestrator orchestrator;
 
     /**
-     * Construct a TaskEvent from the virtual orchestrator.
+     * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
-    public TaskEvent(Orchestrator orchestrator) {
+    TaskEvent(Orchestrator orchestrator) {
         this.taskEventID = UUID.randomUUID();
     }
 

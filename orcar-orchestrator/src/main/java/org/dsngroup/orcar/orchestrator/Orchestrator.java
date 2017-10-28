@@ -17,9 +17,17 @@
 package org.dsngroup.orcar.orchestrator;
 
 public class Orchestrator {
-    private int orchestratorID;
+    private String orchestratorID;
 
-    public Orchestrator(int orchestratorID) {
+    /**
+     * Get the unique OrchestratorID
+     * @return OrchestratorID
+     */
+    public String getOrchestratorID() {
+        return orchestratorID;
+    }
+
+    public Orchestrator(String orchestratorID) {
         this.orchestratorID = orchestratorID;
     }
 }
