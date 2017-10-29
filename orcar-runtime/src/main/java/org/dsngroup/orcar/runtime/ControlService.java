@@ -32,13 +32,13 @@ public class ControlService {
     /**
      * The runNewTask of ControlService, instantiate an {@link Orchestrator} and {@link FunctionalActor}
      * @param orchestratorID The unique ID of orchestrator.
-     * @param className The className of the class which implements FunctionalActor.
+     * @param className The className of the class which implements {@link FunctionalActor}.
      */
     public void runNewTask(String orchestratorID, String className) {
         try {
             // Load Class
             // TODO: Handling exception better.
-            Orchestrator orc = new Orchestrator(orchestratorID, (FunctionalActor) RuntimeClassLoader.loadClass(className));
+            Orchestrator orc = new Orchestrator(orchestratorID, RuntimeClassLoader.loadClass(className));
             // Generate a new task event
             TaskEvent task = TaskFactory.createTaskEvent(orc);
             associatedTaskController.requestToFireTask(task);

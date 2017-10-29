@@ -38,9 +38,9 @@ public class Orchestrator {
      * The orchestrator constructor.
      * @param orchestratorID The unique id of an orchestrator.
      */
-    public Orchestrator(String orchestratorID, FunctionalActor orchestratorFuncitons) {
+    public Orchestrator(String orchestratorID, Object orchestratorFunctions) throws Exception {
         this.orchestratorID = orchestratorID;
         // TODO: Load the class here or externally handling?
-        this.orchestratorFuncitons = orchestratorFuncitons;
+        this.orchestratorFuncitons = (FunctionalActor) orchestratorFunctions;
     }
 }

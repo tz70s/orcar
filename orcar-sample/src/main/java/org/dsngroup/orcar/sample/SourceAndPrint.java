@@ -23,7 +23,7 @@ import org.dsngroup.orcar.gpio.sensor.FakeTemperatureSensor;
 import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
 
 /**
- * Simpile program - source from sensor and output signal to actuator.
+ * Simple program - source from sensor and output signal to actuator.
  */
 public class SourceAndPrint implements FunctionalActor {
     @Override
@@ -31,6 +31,14 @@ public class SourceAndPrint implements FunctionalActor {
         Sensor<Double> sourceSensor = new FakeTemperatureSensor();
         Actuator<Double> actuator = new FakeConsoleActuator<>();
         // Print
-        actuator.actuate(sourceSensor.sense());
+        while (true) {
+            try {
+                Thread.sleep(1000);
+                actuator.actuate(sourceSensor.sense());
+            } catch (Exception e) {
+                // Ignore the interrupted exception
+                e.printStackTrace();
+            }
+        }
     }
 }
