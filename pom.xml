@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.dsngroup.orcar</groupId>
+    <groupId>org.dsngroup</groupId>
     <artifactId>orcar</artifactId>
     <packaging>pom</packaging>
     <version>0.1</version>
@@ -14,12 +14,10 @@
         <module>orcar-eventcache</module>
         <module>orcar-connector</module>
         <module>orcar-gpio</module>
-        <module>orca-sample</module>
         <module>orcar-sample</module>
     </modules>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
+	</properties>
 </project>

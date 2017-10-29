@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>orcar</artifactId>
-        <groupId>org.dsngroup.orcar</groupId>
+        <groupId>org.dsngroup</groupId>
         <version>0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -17,12 +17,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.dsngroup.orcar</groupId>
-            <artifactId>orca-orchestrator</artifactId>
+            <groupId>org.dsngroup</groupId>
+            <artifactId>orcar-orchestrator</artifactId>
             <version>0.1</version>
         </dependency>
         <dependency>
-            <groupId>org.dsngroup.orcar</groupId>
+            <groupId>org.dsngroup</groupId>
             <artifactId>orcar-gpio</artifactId>
             <version>0.1</version>
         </dependency>
