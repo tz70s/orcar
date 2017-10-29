@@ -15,4 +15,12 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.dsngroup.orcar</groupId>
+            <artifactId>orca-runtime</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
+
 </project>

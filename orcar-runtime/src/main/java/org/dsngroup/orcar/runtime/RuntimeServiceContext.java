@@ -29,6 +29,7 @@ public class RuntimeServiceContext {
     private int runtimeThreadPoolSize;
 
     private URL localClassPath;
+
     /**
      * Default constructor of RuntimeServiceContext
      */
@@ -57,6 +58,14 @@ public class RuntimeServiceContext {
             // TODO: gracefully handle.
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Getter of runtimeThreadPoolSize
+     * @return runtimeThreadPoolSize
+     */
+    public int getRuntimeThreadPoolSize() {
+        return runtimeThreadPoolSize;
     }
 
     /**

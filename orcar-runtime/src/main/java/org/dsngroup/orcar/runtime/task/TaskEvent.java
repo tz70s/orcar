@@ -21,35 +21,47 @@ import org.dsngroup.orcar.orchestrator.Orchestrator;
 /**
  * A TaskEvent is an event entity for registered in TaskRegistry.
  */
-public class TaskEvent {
+public class TaskEvent implements Runnable {
 
-    private TaskState state;
+    private TaskState taskState;
 
     private Orchestrator orchestrator;
 
     private String taskEventID;
+
     /**
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
     TaskEvent(Orchestrator orchestrator) {
+        this.taskState = TaskState.PENDING;
         this.taskEventID = orchestrator.getOrchestratorID();
+        this.orchestrator = orchestrator;
+
     }
 
     /**
-     * Get the current state of the task.
+     * Implement Runnable for thread here.
+     */
+    @Override
+    public void run() {
+        orchestrator.run();
+    }
+
+    /**
+     * Get the current taskState of the task.
      * @return {@link TaskState}
      */
-    public TaskState getState() {
-        return state;
+    public TaskState getTaskState() {
+        return taskState;
     }
 
     /**
-     * Set the state of task event.
-     * @param state {@link TaskState}
+     * Set the taskState of task event.
+     * @param taskState {@link TaskState}
      */
-    public void setState(TaskState state) {
-        this.state = state;
+    public void setTaskState(TaskState taskState) {
+        this.taskState = taskState;
     }
 
     /**

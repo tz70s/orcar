@@ -33,7 +33,7 @@ public class TaskController {
      */
     public void requestToFireTask(TaskEvent task) throws Exception {
         // Mark the task into pending state.
-        task.setState(TaskState.PENDING);
+        task.setTaskState(TaskState.PENDING);
         // TODO: Should create a listener to check the task state?
         RuntimeScheduler.fireTask(task);
         TaskRegistry.registerTaskEvent(task);

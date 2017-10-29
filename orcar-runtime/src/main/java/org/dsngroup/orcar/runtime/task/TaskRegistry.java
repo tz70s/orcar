@@ -47,7 +47,7 @@ public class TaskRegistry {
         if (tmpBindingTaskEvent == null) {
             throw new Exception("No such task event.");
         }
-        return tmpBindingTaskEvent.getState();
+        return tmpBindingTaskEvent.getTaskState();
     }
 
     // Singleton

@@ -20,5 +20,9 @@ package org.dsngroup.orcar.orchestrator;
  * The default interface for user to implement.
  */
 public interface FunctionalActor {
+    /**
+     * The Functional Components should implement this interface.
+     * Only run, currently.
+     */
     void run();
 }

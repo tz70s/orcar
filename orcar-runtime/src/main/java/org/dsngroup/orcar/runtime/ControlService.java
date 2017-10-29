@@ -16,9 +16,48 @@
 
 package org.dsngroup.orcar.runtime;
 
+import org.dsngroup.orcar.orchestrator.FunctionalActor;
+import org.dsngroup.orcar.orchestrator.Orchestrator;
+import org.dsngroup.orcar.runtime.task.TaskController;
+import org.dsngroup.orcar.runtime.task.TaskEvent;
+import org.dsngroup.orcar.runtime.task.TaskFactory;
+
 /**
  * The ControlService is used as a mediator for handling external requests.
  */
 public class ControlService {
+
+    private TaskController associatedTaskController;
+
+    /**
+     * The runNewTask of ControlService, instantiate an {@link Orchestrator} and {@link FunctionalActor}
+     * @param orchestratorID The unique ID of orchestrator.
+     * @param className The className of the class which implements FunctionalActor.
+     */
+    public void runNewTask(String orchestratorID, String className) {
+        try {
+            // Load Class
+            // TODO: Handling exception better.
+            Orchestrator orc = new Orchestrator(orchestratorID, (FunctionalActor) RuntimeClassLoader.loadClass(className));
+            // Generate a new task event
+            TaskEvent task = TaskFactory.createTaskEvent(orc);
+            associatedTaskController.requestToFireTask(task);
+
+        } catch (Exception e) {
+            System.out.println("Orchestration instantiation failed");
+            e.printStackTrace();
+            // Drop this request.
+            return;
+        }
+    }
+
+    // TODO: The TaskController and ControlService may consider an another instantiate way.
+    /**
+     * Constructor, which carry with an associatedTaskController
+     * @param associatedTaskController {@link TaskController}
+     */
+    public ControlService(TaskController associatedTaskController) {
+        this.associatedTaskController = associatedTaskController;
+    }
 
 }

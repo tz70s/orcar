@@ -20,6 +20,7 @@ import org.dsngroup.orcar.runtime.task.TaskEvent;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The RuntimeScheduler class schedule the task registered in TaskRegistry.
@@ -56,6 +57,7 @@ public class RuntimeScheduler {
             throw new Exception("The configScheduler for initialized should be called first");
         }
         // TODO: Schedule a task.
+        service.schedule(task, 0, TimeUnit.MILLISECONDS);
     }
 
     private RuntimeScheduler(){}

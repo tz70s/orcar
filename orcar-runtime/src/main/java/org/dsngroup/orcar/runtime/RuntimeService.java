@@ -16,8 +16,7 @@
 
 package org.dsngroup.orcar.runtime;
 
-import org.dsngroup.orcar.orchestrator.FunctionalActor;
-import org.dsngroup.orcar.orchestrator.Orchestrator;
+import org.dsngroup.orcar.runtime.task.TaskController;
 
 /**
  * The RuntimeService is a entry point of orcar.
@@ -26,25 +25,39 @@ public class RuntimeService {
 
     private RuntimeServiceContext runtimeServiceContext;
 
+    private ControlService controlService;
+
+    private TaskController taskController;
+
     public RuntimeService(RuntimeServiceContext runtimeServiceContext) {
         this.runtimeServiceContext = runtimeServiceContext;
         // Initialized RuntimeClassLoader.
+
         // TODO: Reconsider the initialization place.
+        // Init RuntimeClassLoader
         RuntimeClassLoader.init(runtimeServiceContext.getLocalClassPath());
+
+        // Init a taskController
+        // TODO: Need to have a better place.
+        this.taskController = new TaskController();
+        controlService = new ControlService(taskController);
+
+        // Init runtime scheduler
+        try {
+            RuntimeScheduler.configScheduler(runtimeServiceContext.getRuntimeThreadPoolSize());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Incorrect thread pool size.");
+            // drop
+            System.exit(1);
+        }
     }
 
     public RuntimeService serve() {
         // Serve the runtime
         System.out.println("Start a RuntimeService");
 
-        try {
-            Orchestrator orc = new Orchestrator("Actor-01",
-                    (FunctionalActor) RuntimeClassLoader.loadClass("org.dsngroup.orcar.sample.SourceAndPrint"));
-            orc.run();
-        } catch (Exception e) {
-            // Ignore this
-            e.printStackTrace();
-        }
+        controlService.runNewTask("Actor-01", "org.dsngroup.orcar.sample.SourceAndPrint");
 
         return this;
     }
