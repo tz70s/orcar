@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>org.dsngroup</groupId>
-            <artifactId>orcar-orchestrator</artifactId>
+            <artifactId>orcar-actor</artifactId>
             <version>0.1</version>
         </dependency>
         <dependency>

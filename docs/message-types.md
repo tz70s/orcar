@@ -1,13 +1,13 @@
 # The Message Format
 
-The communication between different nodes is based on tcp(currently), this file discribe the communication message format.
+The communication between different nodes is based on tcp(currently), this file discribe the communication mail format.
 
 ## Message Header
 
-The message header should records the following information.
-To avoid heavy weight message load, will used bytes to represented. (may be scale in the future)
+The mail header should records the following information.
+To avoid heavy weight mail load, will used bytes to represented. (may be scale in the future)
 
-1. `message type` - 1 byte
+1. `mail type` - 1 byte
 2. `src-node-id` - 1byte
 3. `src-orchestrator-id` - 1byte
 4. `dst-node-id` - 1byte

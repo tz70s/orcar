@@ -16,6 +16,7 @@
 
 package org.dsngroup.orcar.runtime.task;
 
+import org.dsngroup.orcar.actor.Mail;
 import org.dsngroup.orcar.runtime.Orchestrator;
 
 import java.util.Set;
@@ -33,16 +34,17 @@ public class TaskFactory {
     /**
      * Create a task event
      * @param orchestrator {@link Orchestrator}
+     * @param mail {@link Mail}
      * @return {@link TaskEvent}
      * @throws Exception Need to be actually catch if the repeat orchestrator id.
      */
-    public static TaskEvent createTaskEvent(Orchestrator orchestrator) throws Exception {
+    public static TaskEvent createTaskEvent(Orchestrator orchestrator, Mail mail) throws Exception {
         // To avoid double creation of a task, check Orchestrator ID if contains.
         if (orchestratorIDSet.contains(orchestrator.getOrchestratorID())) {
             throw new Exception("The Orchestrator is already exists");
         }
         orchestratorIDSet.add(orchestrator.getOrchestratorID());
-        return new TaskEvent(orchestrator);
+        return new TaskEvent(orchestrator, mail);
     }
 
     private TaskFactory() {}

@@ -14,34 +14,25 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.runtime;
+package org.dsngroup.orcar.sample;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.Mail;
+import org.dsngroup.orcar.gpio.actuator.Actuator;
+import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
 
-public class Orchestrator {
-    private Byte orchestratorID;
-
-    private FunctionalActor orchestratorFunciton;
+/**
+ * Sample for observing the functionality of event-driven(data-flow) programming.
+ */
+public class PrintMailContent implements FunctionalActor {
 
     /**
-     * Get the unique OrchestratorID
-     * @return OrchestratorID
+     * Print out the received mail.
+     * @param mail received mail.
      */
-    public Byte getOrchestratorID() {
-        return orchestratorID;
-    }
-
+    @Override
     public void accept(Mail mail) {
-        orchestratorFunciton.accept(mail);
-    }
-
-    /**
-     * The orchestrator constructor.
-     * @param orchestratorID The unique id of an orchestrator.
-     */
-    public Orchestrator(Byte orchestratorID, Object orchestratorFunctions) throws Exception {
-        this.orchestratorID = orchestratorID;
-        this.orchestratorFunciton = (FunctionalActor) orchestratorFunctions;
+        Actuator<String> actuator = new FakeConsoleActuator<>();
+        actuator.actuate(mail.toString());
     }
 }

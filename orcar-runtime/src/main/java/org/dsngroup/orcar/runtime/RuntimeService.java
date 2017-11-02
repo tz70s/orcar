@@ -60,8 +60,8 @@ public class RuntimeService {
         controlService = new ControlService(taskController);
 
         // Init router and internal switch
-        router = new Router((byte) 1);
-        internalSwitch = new InternalSwitch((byte) 1, router, controlService);
+        router = new Router((byte) '1');
+        internalSwitch = new InternalSwitch((byte) '1', router, controlService);
 
 
         // Init runtime scheduler
@@ -83,12 +83,14 @@ public class RuntimeService {
         // Serve the runtime
         System.out.println("Start a RuntimeService");
 
-        controlService.runNewTask((byte) 1, "org.dsngroup.orcar.sample.SourceAndPrint");
-
         try {
             Message message = new Message(new MessageHeader("111110\r\n"),
-                    new VariableHeader("org.dsngroup.orcar.sample.SourceAndPrint"), new MessagePayload("No"));
+                    new VariableHeader("org.dsngroup.orcar.sample.SourceAndPrint"), new MessagePayload("{}"));
             internalSwitch.forward(message);
+            Message anotherMessage = new Message(new MessageHeader("111120\r\n"),
+                    new VariableHeader("org.dsngroup.orcar.sample.PrintMailContent"),
+                    new MessagePayload("{\"Hello\": \"World\"}"));
+            internalSwitch.forward(anotherMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }

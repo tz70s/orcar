@@ -23,14 +23,14 @@ import java.nio.ByteBuffer;
  */
 public class MessageHeader {
 
-    // The Message Header should be lightweight.
+    // The Mail Header should be lightweight.
     // TODO: The messageType is waste.
     // TODO: May extends the size.
-    private Byte messageType;
-    private Byte srcNodeID;
-    private Byte srcOrchestratorID;
-    private Byte dstNodeID;
-    private Byte dstOrchestratorID;
+    private byte messageType;
+    private byte srcNodeID;
+    private byte srcOrchestratorID;
+    private byte dstNodeID;
+    private byte dstOrchestratorID;
 
     /**
      * Default constructor, which constructs from bytes[]
@@ -89,7 +89,7 @@ public class MessageHeader {
      * Get the message type.
      * @return message type.
      */
-    public Byte getMessageType() {
+    public byte getMessageType() {
         return messageType;
     }
 
@@ -97,7 +97,7 @@ public class MessageHeader {
      * Get the source node ID.
      * @return source node ID.
      */
-    public Byte getSrcNodeID() {
+    public byte getSrcNodeID() {
         return srcNodeID;
     }
 
@@ -105,7 +105,7 @@ public class MessageHeader {
      * Get the source orchestrator ID.
      * @return source orchestrator ID.
      */
-    public Byte getSrcOrchestratorID() {
+    public byte getSrcOrchestratorID() {
         return srcOrchestratorID;
     }
 
@@ -113,7 +113,7 @@ public class MessageHeader {
      * Get the destination node ID.
      * @return destination node ID.
      */
-    public Byte getDstNodeID() {
+    public byte getDstNodeID() {
         return dstNodeID;
     }
 
@@ -121,7 +121,7 @@ public class MessageHeader {
      * Get the destination orchestrator ID.
      * @return destination orchestrator ID.
      */
-    public Byte getDstOrchestratorID() {
+    public byte getDstOrchestratorID() {
         return dstOrchestratorID;
     }
 }

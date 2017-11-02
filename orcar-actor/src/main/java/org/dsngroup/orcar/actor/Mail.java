@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.runtime.message;
+package org.dsngroup.orcar.actor;
+
+import com.google.gson.Gson;
 
 /**
- * MessagePayload class wrap the payload with extended functionalities.
+ * The mail interface which resolves the default to object or to json methods.
  */
-public class MessagePayload {
+public interface Mail {
 
-    private String messagePayload;
-
-    /**
-     * Constructor of message payload.
-     * @param messagePayload The wrapping string payload.
-     */
-    public MessagePayload(String messagePayload) {
-        this.messagePayload = messagePayload;
+    default Object toObject(String jsonString) {
+        Gson gson = new Gson();
+        Class cls = this.getClass();
+        return gson.fromJson(jsonString, cls);
     }
 
-    /**
-     * Get the real message payload.
-     * @return string.
-     */
-    public String getMessagePayload() {
-        // TODO: strictly checks.
-        return messagePayload;
+    default String toString(Object obj) {
+        Gson gson = new Gson();
+        return gson.toJson(obj);
     }
 }

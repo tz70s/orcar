@@ -16,6 +16,7 @@
 
 package org.dsngroup.orcar.runtime.routing;
 
+import org.dsngroup.orcar.actor.SimpleMail;
 import org.dsngroup.orcar.runtime.ControlService;
 import org.dsngroup.orcar.runtime.message.Message;
 
@@ -49,15 +50,18 @@ public class InternalSwitch {
      */
     public void forward(Message message) {
         if (message.getMessageHeader().getDstNodeID() != nodeID) {
+            System.out.println(message.getMessageHeader().getDstNodeID());
+            System.out.println(nodeID);
             // External message, forward to the router.
             router.forward(message);
+            System.out.println("Go to external message");
         } else {
             // Forward this message to control service, to generate a new task event.
             // Parse this message into lower granularity.
-            // TODO: Extend the class name in to variable header.
-
+            System.out.println("Run a new task!");
             controlService.runNewTask(message.getMessageHeader().getDstOrchestratorID(),
-                    message.getVariableHeader().getClassName());
+                    message.getVariableHeader().getClassName(),
+                    new SimpleMail(message.getMessagePayload().getMessagePayload()));
         }
     }
 }

@@ -16,6 +16,7 @@
 
 package org.dsngroup.orcar.runtime.task;
 
+import org.dsngroup.orcar.actor.Mail;
 import org.dsngroup.orcar.runtime.Orchestrator;
 
 /**
@@ -29,15 +30,17 @@ public class TaskEvent implements Runnable {
 
     private Byte taskEventID;
 
+    private Mail mail;
+
     /**
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
-    TaskEvent(Orchestrator orchestrator) {
+    TaskEvent(Orchestrator orchestrator, Mail mail) {
         this.taskState = TaskState.PENDING;
         this.taskEventID = orchestrator.getOrchestratorID();
         this.orchestrator = orchestrator;
-
+        this.mail = mail;
     }
 
     /**
@@ -45,7 +48,7 @@ public class TaskEvent implements Runnable {
      */
     @Override
     public void run() {
-        orchestrator.run();
+        orchestrator.accept(mail);
     }
 
     /**

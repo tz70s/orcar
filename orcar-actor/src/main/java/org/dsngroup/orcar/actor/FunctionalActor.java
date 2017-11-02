@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.runtime.message;
+package org.dsngroup.orcar.actor;
 
 /**
- * MessagePayload class wrap the payload with extended functionalities.
+ * The default interface for user to implement.
  */
-public class MessagePayload {
-
-    private String messagePayload;
-
+public interface FunctionalActor {
     /**
-     * Constructor of message payload.
-     * @param messagePayload The wrapping string payload.
+     * The FunctionalActor is an actor model style interface.
+     * It's event-driven and only when the mail is arrived the actor will be spawned.
+     * The only method should be override is accept.
      */
-    public MessagePayload(String messagePayload) {
-        this.messagePayload = messagePayload;
-    }
-
-    /**
-     * Get the real message payload.
-     * @return string.
-     */
-    public String getMessagePayload() {
-        // TODO: strictly checks.
-        return messagePayload;
-    }
+    void accept(Mail mail);
 }

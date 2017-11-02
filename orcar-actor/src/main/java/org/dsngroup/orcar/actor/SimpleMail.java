@@ -17,12 +17,17 @@
 package org.dsngroup.orcar.actor;
 
 /**
- * The default interface for user to implement.
+ * Currently, need to re-think this.
  */
-public interface FunctionalActor {
+public class SimpleMail implements Mail {
+
+    private Object object;
+
     /**
-     * The Functional Components should implement this interface.
-     * Only run, currently.
+     * Trans to object from string.
+     * @param rawString plain text string.
      */
-    void run();
+    public SimpleMail(String rawString) {
+        this.object = this.toObject(rawString);
+    }
 }
