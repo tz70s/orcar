@@ -16,6 +16,11 @@
 
 package org.dsngroup.orcar.runtime;
 
+import org.dsngroup.orcar.runtime.message.Message;
+import org.dsngroup.orcar.runtime.message.MessageHeader;
+import org.dsngroup.orcar.runtime.message.MessagePayload;
+import org.dsngroup.orcar.runtime.routing.Router;
+import org.dsngroup.orcar.runtime.routing.InternalSwitch;
 import org.dsngroup.orcar.runtime.task.TaskController;
 
 /**
@@ -28,6 +33,10 @@ public class RuntimeService {
     private ControlService controlService;
 
     private TaskController taskController;
+
+    private Router router;
+
+    private InternalSwitch internalSwitch;
 
     /**
      * RuntimeService constructs an entry runtime.
@@ -46,8 +55,13 @@ public class RuntimeService {
 
         // Init a taskController
         // TODO: Need to have a better place.
-        this.taskController = new TaskController();
+        taskController = new TaskController();
         controlService = new ControlService(taskController);
+
+        // Init router and internal switch
+        router = new Router((byte) 1);
+        internalSwitch = new InternalSwitch((byte) 1, router, controlService);
+
 
         // Init runtime scheduler
         try {
@@ -60,15 +74,30 @@ public class RuntimeService {
         }
     }
 
+    /**
+     * Serve the runtime service.
+     * @return this, for chaining method.
+     */
     public RuntimeService serve() {
         // Serve the runtime
         System.out.println("Start a RuntimeService");
 
-        controlService.runNewTask("Actor-01", "org.dsngroup.orcar.sample.SourceAndPrint");
+        controlService.runNewTask((byte) 1, "org.dsngroup.orcar.sample.SourceAndPrint");
+
+        try {
+            Message message = new Message(new MessageHeader("111110\r\n"), new MessagePayload("No"));
+            internalSwitch.forward(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return this;
     }
 
+    /**
+     * Get the associated runtime service context.
+     * @return {@link RuntimeServiceContext}
+     */
     public RuntimeServiceContext getRuntimeServiceContext() {
         return runtimeServiceContext;
     }

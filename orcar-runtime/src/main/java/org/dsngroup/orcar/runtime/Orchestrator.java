@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.orchestrator;
+package org.dsngroup.orcar.runtime;
+
+import org.dsngroup.orcar.actor.FunctionalActor;
 
 public class Orchestrator {
-    private String orchestratorID;
+    private Byte orchestratorID;
 
-    // TODO: May extends to multiple functions
-    private FunctionalActor orchestratorFuncitons;
+    private FunctionalActor orchestratorFunciton;
 
     /**
      * Get the unique OrchestratorID
      * @return OrchestratorID
      */
-    public String getOrchestratorID() {
+    public Byte getOrchestratorID() {
         return orchestratorID;
     }
 
     public void run() {
-        orchestratorFuncitons.run();
+        orchestratorFunciton.run();
     }
 
     /**
      * The orchestrator constructor.
      * @param orchestratorID The unique id of an orchestrator.
      */
-    public Orchestrator(String orchestratorID, Object orchestratorFunctions) throws Exception {
+    public Orchestrator(Byte orchestratorID, Object orchestratorFunctions) throws Exception {
         this.orchestratorID = orchestratorID;
-        // TODO: Load the class here or externally handling?
-        this.orchestratorFuncitons = (FunctionalActor) orchestratorFunctions;
+        this.orchestratorFunciton = (FunctionalActor) orchestratorFunctions;
     }
 }

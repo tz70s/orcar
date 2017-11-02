@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.runtime.proxy;
+package org.dsngroup.orcar.runtime.routing;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.net.InetAddress;
 
 /**
- * The NetworkRoutingTable store the proxy(ip) address with associated node-id.
+ * The RoutingTable store the proxy(ip) address with associated node-id.
  */
-public class NetworkRoutingTable {
+public class RoutingTable {
 
-    // The node-id is represented in a Character.
-    private Map<Character, InetAddress> routingTable;
+    private Map<Byte, InetAddress> routingTable;
 
     /**
-     * Constructor of NetworkRoutingTable.
+     * Constructor of RoutingTable.
      */
-    public NetworkRoutingTable() {
+    public RoutingTable() {
         // TODO: may be a singleton.
         this.routingTable = new ConcurrentHashMap<>();
         // TODO: should store the controller at first.
@@ -39,23 +38,26 @@ public class NetworkRoutingTable {
 
     /**
      * Get IP address from routing table
-     * @param nodeID Character-based for represented a node.
+     * @param  nodeID node ID of a node.
      * @return IP address
      */
-    public InetAddress lookUp(Character nodeID) {
+    public InetAddress lookUp(Byte nodeID) throws Exception {
         if (!routingTable.containsKey(nodeID)) {
             // Doesn't have the routing rules, ask controller
             // TODO: Ask and restore.
+
+            // if not found
+            throw new Exception("Can't resolve the host name to ip address");
         }
         return routingTable.get(nodeID);
     }
 
     /**
      * Store a routing rule to routing table.
-     * @param nodeID Character-based for represented a node.
+     * @param nodeID node ID of a node.
      * @param ipAddress The IP address of a node.
      */
-    public void store(Character nodeID, InetAddress ipAddress) {
+    public void store(Byte nodeID, InetAddress ipAddress) {
         routingTable.put(nodeID, ipAddress);
     }
 

@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-/**
- * This package is the proxy service of a node.
- */
+package org.dsngroup.orcar.runtime.message;
 
-package org.dsngroup.orcar.runtime.proxy;
+/**
+ * MessagePayload class wrap the payload with extended functionalities.
+ */
+public class MessagePayload {
+
+    private String messagePayload;
+
+    /**
+     * Constructor of message payload.
+     * @param messagePayload The wrapping string payload.
+     */
+    public MessagePayload(String messagePayload) {
+        this.messagePayload = messagePayload;
+    }
+}

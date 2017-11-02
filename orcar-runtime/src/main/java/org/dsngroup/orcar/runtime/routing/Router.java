@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.orchestrator;
+package org.dsngroup.orcar.runtime.routing;
+
+import org.dsngroup.orcar.runtime.message.Message;
 
 /**
- * The default interface for user to implement.
+ * The router is response for routes the incoming connection to the target destination.
  */
-public interface FunctionalActor {
+public class Router {
+
+    private Byte nodeID;
+
+    public Router(Byte nodeID) {
+        this.nodeID = nodeID;
+    }
+
     /**
-     * The Functional Components should implement this interface.
-     * Only run, currently.
+     * Forward message to either external or internal switch.
+     * @param message {@link Message}
      */
-    void run();
+    public void forward(Message message) {
+
+    }
+
 }

@@ -16,7 +16,7 @@
 
 package org.dsngroup.orcar.runtime.task;
 
-import org.dsngroup.orcar.orchestrator.Orchestrator;
+import org.dsngroup.orcar.runtime.Orchestrator;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import java.util.HashSet;
  */
 public class TaskFactory {
 
-    private static Set<String> orchestratorIDSet = new HashSet<>();
+    private static Set<Byte> orchestratorIDSet = new HashSet<>();
 
     // I think the request to generate a task may be single threaded.
 

@@ -16,7 +16,7 @@
 
 package org.dsngroup.orcar.runtime.task;
 
-import org.dsngroup.orcar.orchestrator.Orchestrator;
+import org.dsngroup.orcar.runtime.Orchestrator;
 
 /**
  * A TaskEvent is an event entity for registered in TaskRegistry.
@@ -27,7 +27,7 @@ public class TaskEvent implements Runnable {
 
     private Orchestrator orchestrator;
 
-    private String taskEventID;
+    private Byte taskEventID;
 
     /**
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
@@ -68,7 +68,7 @@ public class TaskEvent implements Runnable {
      * Get the unique ID of this task event, which is equivalent to the orchestrator.
      * @return taskEventID.
      */
-    public String getTaskEventID() {
+    public Byte getTaskEventID() {
         return taskEventID;
     }
 }

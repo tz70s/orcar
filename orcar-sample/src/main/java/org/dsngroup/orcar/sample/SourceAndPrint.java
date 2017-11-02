@@ -18,7 +18,7 @@ package org.dsngroup.orcar.sample;
 
 import org.dsngroup.orcar.gpio.actuator.Actuator;
 import org.dsngroup.orcar.gpio.sensor.Sensor;
-import org.dsngroup.orcar.orchestrator.FunctionalActor;
+import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.gpio.sensor.FakeTemperatureSensor;
 import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
 

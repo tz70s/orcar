@@ -26,7 +26,7 @@ public class TaskRegistry {
 
     // TODO: What is a proper TaskRegistry data structure?
 
-    private static Map<String, TaskEvent> registryMemoryPool = new ConcurrentHashMap<>();
+    private static Map<Byte, TaskEvent> registryMemoryPool = new ConcurrentHashMap<>();
 
     /**
      * Register a task event into TaskRegistry.
@@ -41,7 +41,7 @@ public class TaskRegistry {
      * @param taskEventID The unique ID of TaskEvent which is also the orchestrator ID.
      * @return {@link TaskState}
      */
-    public static synchronized TaskState getTaskEventState(String taskEventID) throws Exception {
+    public static synchronized TaskState getTaskEventState(Byte taskEventID) throws Exception {
         // TODO: may need a better lock.
         TaskEvent tmpBindingTaskEvent = registryMemoryPool.get(taskEventID);
         if (tmpBindingTaskEvent == null) {

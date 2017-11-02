@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.runtime.proxy;
-
 /**
- * The router is response for routes the incoming connection to the target destination.
+ * This package is the proxy service of a node.
  */
-public class Router {
 
-    private Character nodeID;
-
-    public Router(Character nodeID) {
-        this.nodeID = nodeID;
-    }
-
-}
+package org.dsngroup.orcar.runtime.routing;

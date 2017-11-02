@@ -45,11 +45,14 @@ public class TaskController {
      * @return {@link TaskState}
      * @throws Exception Throws if the error occurred on get state from registry, it should be catch.
      */
-    public TaskState requestForTaskState(String orchestratorID) throws Exception {
+    public TaskState requestForTaskState(Byte orchestratorID) throws Exception {
         // TODO: should have a unique alias for request, instead of task.
         return TaskRegistry.getTaskEventState(orchestratorID);
     }
 
+    /**
+     * To duplication the load.
+     */
     public TaskController() {
         // No internal state need to keep, currently.
     }

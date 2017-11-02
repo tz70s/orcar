@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.orchestrator;
+package org.dsngroup.orcar.actor;
 
-public class AbstractOrchestrator {
-    // AbstractOrchestrator for create complex orchestrator virtual topology.
+/**
+ * The default interface for user to implement.
+ */
+public interface FunctionalActor {
+    /**
+     * The Functional Components should implement this interface.
+     * Only run, currently.
+     */
+    void run();
 }

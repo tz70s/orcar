@@ -15,7 +15,7 @@
  */
 
 /**
- * This package is the middle-layer as abstraction of orchestrator which will be mapped into runtime of orca.
+ * This package is the proxy service of a node.
  */
 
-package org.dsngroup.orcar.orchestrator;
+package org.dsngroup.orcar.runtime.message;
