@@ -19,6 +19,7 @@ package org.dsngroup.orcar.runtime;
 import org.dsngroup.orcar.runtime.message.Message;
 import org.dsngroup.orcar.runtime.message.MessageHeader;
 import org.dsngroup.orcar.runtime.message.MessagePayload;
+import org.dsngroup.orcar.runtime.message.VariableHeader;
 import org.dsngroup.orcar.runtime.routing.Router;
 import org.dsngroup.orcar.runtime.routing.InternalSwitch;
 import org.dsngroup.orcar.runtime.task.TaskController;
@@ -85,7 +86,8 @@ public class RuntimeService {
         controlService.runNewTask((byte) 1, "org.dsngroup.orcar.sample.SourceAndPrint");
 
         try {
-            Message message = new Message(new MessageHeader("111110\r\n"), new MessagePayload("No"));
+            Message message = new Message(new MessageHeader("111110\r\n"),
+                    new VariableHeader("org.dsngroup.orcar.sample.SourceAndPrint"), new MessagePayload("No"));
             internalSwitch.forward(message);
         } catch (Exception e) {
             e.printStackTrace();

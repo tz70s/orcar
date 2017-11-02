@@ -55,7 +55,9 @@ public class InternalSwitch {
             // Forward this message to control service, to generate a new task event.
             // Parse this message into lower granularity.
             // TODO: Extend the class name in to variable header.
-            controlService.runNewTask(message.getMessageHeader().getDstOrchestratorID(), "org.dsngroup.orcar.sample.SourceAndPrint");
+
+            controlService.runNewTask(message.getMessageHeader().getDstOrchestratorID(),
+                    message.getVariableHeader().getClassName());
         }
     }
 }

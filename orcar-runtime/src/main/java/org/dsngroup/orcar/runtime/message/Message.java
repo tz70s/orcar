@@ -25,6 +25,8 @@ public class Message {
 
     private MessageHeader messageHeader;
 
+    private VariableHeader variableHeader;
+
     private MessagePayload messagePayload;
 
     /**
@@ -37,16 +39,19 @@ public class Message {
         byte[] headerBytes = new byte[8];
         buffer.get(headerBytes);
         messageHeader = new MessageHeader(headerBytes);
+        variableHeader = new VariableHeader(buffer);
         messagePayload = new MessagePayload(buffer.toString());
     }
 
     /**
      * Generate new message from header and payload.
      * @param messageHeader {@link MessageHeader}
+     * @param variableHeader {@link VariableHeader}
      * @param messagePayload {@link MessagePayload}
      */
-    public Message(MessageHeader messageHeader, MessagePayload messagePayload) {
+    public Message(MessageHeader messageHeader, VariableHeader variableHeader, MessagePayload messagePayload) {
         this.messageHeader = messageHeader;
+        this.variableHeader = variableHeader;
         this.messagePayload = messagePayload;
     }
 
@@ -56,6 +61,14 @@ public class Message {
      */
     public MessageHeader getMessageHeader() {
         return messageHeader;
+    }
+
+    /**
+     * Get the variable header.
+     * @return variable header.
+     */
+    public VariableHeader getVariableHeader() {
+        return variableHeader;
     }
 
     /**

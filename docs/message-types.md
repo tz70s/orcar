@@ -5,16 +5,24 @@ The communication between different nodes is based on tcp(currently), this file 
 ## Message Header
 
 The message header should records the following information.
-1. `dst-node-id` or `gateway/controller`
-2. `dst-orchestrator-id` or `gateway/controller`
-3. `src-node-id` or `gateway/controller`
-4. `src-orchestrator-id` or `gateway/controller`
-3. `message type`
+To avoid heavy weight message load, will used bytes to represented. (may be scale in the future)
 
-To avoid heavy weight message load, will used bitmap to represented.
+1. `message type` - 1 byte
+2. `src-node-id` - 1byte
+3. `src-orchestrator-id` - 1byte
+4. `dst-node-id` - 1byte
+5. `dst-orchestrator-id` - 1byte
+6. `reserved` - 1byte
+7. `\r`
+8. `\n`
 
-1. `node-id` - 1byte
-2. `orchestrator-id` - 1byte
-3. `message type` - 1byte
-4. `reserved` - 3byte
-5. `payload`
+
+## Variable Header
+
+A String based header, for storing class names.(currently)
+
+1. Class Name + `\r\n\r\n` (CRLF)
+
+## Message Payload 
+
+String
