@@ -29,6 +29,13 @@ public class RuntimeService {
 
     private TaskController taskController;
 
+    /**
+     * RuntimeService constructs an entry runtime.
+     * <code>
+     *     RuntimeService srv = new RuntimeService(ctx);
+     * </code>
+     * @param runtimeServiceContext {@link RuntimeServiceContext}
+     */
     public RuntimeService(RuntimeServiceContext runtimeServiceContext) {
         this.runtimeServiceContext = runtimeServiceContext;
         // Initialized RuntimeClassLoader.
