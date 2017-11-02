@@ -36,9 +36,7 @@ public class Message {
      */
     public Message (ByteBuffer buffer) throws Exception {
         // We should flip the bytebuffer outside.
-        byte[] headerBytes = new byte[8];
-        buffer.get(headerBytes);
-        messageHeader = new MessageHeader(headerBytes);
+        messageHeader = new MessageHeader(buffer);
         variableHeader = new VariableHeader(buffer);
         messagePayload = new MessagePayload(buffer.toString());
     }

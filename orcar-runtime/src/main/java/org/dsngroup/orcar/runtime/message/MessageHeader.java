@@ -16,6 +16,8 @@
 
 package org.dsngroup.orcar.runtime.message;
 
+import java.nio.ByteBuffer;
+
 /**
  * MessageHeader represented the header fields of a {@link Message}
  */
@@ -32,14 +34,13 @@ public class MessageHeader {
 
     /**
      * Default constructor, which constructs from bytes[]
-     * @param bytes The bytes array sliced from ByteBuffer.
+     * @param buffer {@link ByteBuffer}
      * @throws Exception Parsing failed.
      */
-    public MessageHeader(byte[] bytes) throws Exception {
+    public MessageHeader(ByteBuffer buffer) throws Exception {
         // Parse the header field
-        if (bytes.length < 8) {
-            throw new Exception("Message header parsing failed, missing options.");
-        }
+        byte[] bytes = new byte[8];
+        buffer.get(bytes, 0, 8);
         messageType = bytes[0];
         srcNodeID = bytes[1];
         srcOrchestratorID = bytes[2];
@@ -53,7 +54,8 @@ public class MessageHeader {
      * @throws Exception Parsing failed.
      */
     public MessageHeader(String rawHeader) throws Exception {
-        this(rawHeader.getBytes());
+        this((byte) rawHeader.charAt(0), (byte) rawHeader.charAt(1), (byte) rawHeader.charAt(2),
+                (byte) rawHeader.charAt(3), (byte) rawHeader.charAt(4));
     }
 
     /**
