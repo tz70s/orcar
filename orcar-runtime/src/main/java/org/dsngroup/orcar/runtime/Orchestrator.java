@@ -17,7 +17,7 @@
 package org.dsngroup.orcar.runtime;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
-import org.dsngroup.orcar.actor.Mail;
+import org.dsngroup.orcar.actor.MailBox;
 
 public class Orchestrator {
     private Byte orchestratorID;
@@ -32,8 +32,8 @@ public class Orchestrator {
         return orchestratorID;
     }
 
-    public void accept(Mail mail) {
-        orchestratorFunciton.accept(mail);
+    public void accept(MailBox mailBox) {
+        orchestratorFunciton.accept(mailBox);
     }
 
     /**

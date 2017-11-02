@@ -16,7 +16,7 @@
 
 package org.dsngroup.orcar.runtime.routing;
 
-import org.dsngroup.orcar.actor.SimpleMail;
+import org.dsngroup.orcar.actor.MailBox;
 import org.dsngroup.orcar.runtime.ControlService;
 import org.dsngroup.orcar.runtime.message.Message;
 
@@ -47,8 +47,9 @@ public class InternalSwitch {
     /**
      * Forward the message.
      * @param message {@link Message}
+     * @throws {@link Exception} the message deserialization failed.
      */
-    public void forward(Message message) {
+    public void forward(Message message) throws Exception {
         if (message.getMessageHeader().getDstNodeID() != nodeID) {
             System.out.println(message.getMessageHeader().getDstNodeID());
             System.out.println(nodeID);
@@ -61,7 +62,7 @@ public class InternalSwitch {
             System.out.println("Run a new task!");
             controlService.runNewTask(message.getMessageHeader().getDstOrchestratorID(),
                     message.getVariableHeader().getClassName(),
-                    new SimpleMail(message.getMessagePayload().getMessagePayload()));
+                    new MailBox(message.getMessagePayload().getMessagePayload()));
         }
     }
 }

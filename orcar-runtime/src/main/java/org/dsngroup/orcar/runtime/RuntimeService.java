@@ -89,7 +89,7 @@ public class RuntimeService {
             internalSwitch.forward(message);
             Message anotherMessage = new Message(new MessageHeader("111120\r\n"),
                     new VariableHeader("org.dsngroup.orcar.sample.PrintMailContent"),
-                    new MessagePayload("{\"Hello\": \"World\"}"));
+                    new MessagePayload("Hello"));
             internalSwitch.forward(anotherMessage);
         } catch (Exception e) {
             e.printStackTrace();

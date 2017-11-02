@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
  */
 public class MessageHeader {
 
-    // The Mail Header should be lightweight.
+    // The MailBox Header should be lightweight.
     // TODO: The messageType is waste.
     // TODO: May extends the size.
     private byte messageType;

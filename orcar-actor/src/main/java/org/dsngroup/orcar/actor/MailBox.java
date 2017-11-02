@@ -16,18 +16,21 @@
 
 package org.dsngroup.orcar.actor;
 
+import java.io.Serializable;
+
 /**
- * Currently, need to re-think this.
+ * The mailable interface which resolves the default to object or to json methods.
  */
-public class SimpleMail implements Mail {
+public class MailBox implements Serializable {
 
-    private Object object;
+    private String mail;
 
-    /**
-     * Trans to object from string.
-     * @param rawString plain text string.
-     */
-    public SimpleMail(String rawString) {
-        this.object = this.toObject(rawString);
+    public MailBox(String mail) {
+        this.mail = mail;
+    }
+
+    @Override
+    public String toString() {
+        return mail;
     }
 }

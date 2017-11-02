@@ -16,7 +16,7 @@
 
 package org.dsngroup.orcar.sample;
 
-import org.dsngroup.orcar.actor.Mail;
+import org.dsngroup.orcar.actor.MailBox;
 import org.dsngroup.orcar.gpio.actuator.Actuator;
 import org.dsngroup.orcar.gpio.sensor.Sensor;
 import org.dsngroup.orcar.actor.FunctionalActor;
@@ -28,8 +28,8 @@ import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
  */
 public class SourceAndPrint implements FunctionalActor {
     @Override
-    public void accept(Mail mail) {
-        // Ignore the incoming mail.
+    public void accept(MailBox mailBox) {
+        // Ignore the incoming mailBox.
         Sensor<Double> sourceSensor = new FakeTemperatureSensor();
         Actuator<Double> actuator = new FakeConsoleActuator<>();
         // Print
