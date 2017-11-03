@@ -51,10 +51,8 @@ public class InternalSwitch {
      */
     public void forward(Message message) throws Exception {
         if (message.getMessageHeader().getDstNodeID() != nodeID) {
-            System.out.println(message.getMessageHeader().getDstNodeID());
-            System.out.println(nodeID);
             // External message, forward to the router.
-            router.forward(message);
+            router.externalForward(message);
             System.out.println("Go to external message");
         } else {
             // Forward this message to control service, to generate a new task event.

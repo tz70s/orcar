@@ -76,4 +76,15 @@ public class Message {
     public MessagePayload getMessagePayload() {
         return messagePayload;
     }
+
+    /**
+     * To String
+     * @return String wraps of message
+     */
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(messageHeader.toString()).append(variableHeader.toString())
+                .append(messagePayload.toString());
+        return stringBuilder.toString();
+    }
 }

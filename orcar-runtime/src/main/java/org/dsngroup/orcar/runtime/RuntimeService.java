@@ -60,7 +60,13 @@ public class RuntimeService {
         controlService = new ControlService(taskController);
 
         // Init router and internal switch
-        router = new Router((byte) '1');
+        try {
+            router = new Router((byte) '1', internalSwitch, 4);
+        } catch (Exception e) {
+            // TODO: use the default value internal.
+            e.printStackTrace();
+            System.exit(1);
+        }
         internalSwitch = new InternalSwitch((byte) '1', router, controlService);
 
 

@@ -39,4 +39,13 @@ public class MessagePayload {
         // TODO: strictly checks.
         return messagePayload;
     }
+
+    /**
+     * Override toString for equivalent access.
+     * @return string.
+     */
+    @Override
+    public String toString() {
+        return messagePayload;
+    }
 }

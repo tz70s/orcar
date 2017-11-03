@@ -25,15 +25,13 @@ import java.net.InetAddress;
  */
 public class RoutingTable {
 
-    private Map<Byte, InetAddress> routingTable;
+    private static Map<Byte, InetAddress> routingTable = new ConcurrentHashMap<>();
 
     /**
-     * Constructor of RoutingTable.
+     * Only one routing table.
      */
-    public RoutingTable() {
-        // TODO: may be a singleton.
-        this.routingTable = new ConcurrentHashMap<>();
-        // TODO: should store the controller at first.
+    private RoutingTable() {
+        // Singleton.
     }
 
     /**
@@ -41,7 +39,7 @@ public class RoutingTable {
      * @param  nodeID node ID of a node.
      * @return IP address
      */
-    public InetAddress lookUp(Byte nodeID) throws Exception {
+    public static InetAddress lookUp(Byte nodeID) throws Exception {
         if (!routingTable.containsKey(nodeID)) {
             // Doesn't have the routing rules, ask controller
             // TODO: Ask and restore.
@@ -57,7 +55,7 @@ public class RoutingTable {
      * @param nodeID node ID of a node.
      * @param ipAddress The IP address of a node.
      */
-    public void store(Byte nodeID, InetAddress ipAddress) {
+    public static void store(Byte nodeID, InetAddress ipAddress) {
         routingTable.put(nodeID, ipAddress);
     }
 

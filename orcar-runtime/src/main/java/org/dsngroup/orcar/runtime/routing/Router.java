@@ -24,17 +24,31 @@ import org.dsngroup.orcar.runtime.message.Message;
 public class Router {
 
     private Byte nodeID;
+    // TODO: may be deprecated.
+    private InternalSwitch internalSwitch;
 
-    public Router(Byte nodeID) {
+    /**
+     * Constructor of router, may be modified into accept a single context.
+     * @param nodeID
+     * @param internalSwitch
+     */
+    public Router(Byte nodeID, InternalSwitch internalSwitch, int routingThreadPoolSize) throws Exception {
         this.nodeID = nodeID;
+        this.internalSwitch = internalSwitch;
+        RoutingScheduler.configScheduler(routingThreadPoolSize);
+    }
+
+    private void routerSelector() {
+
     }
 
     /**
-     * Forward message to either external or internal switch.
-     * @param message {@link Message}
+     * Do the external forwarding.
+     * @param message {@see Message}
+     * @throws Exception forwarder failed.
      */
-    public void forward(Message message) {
-
+    public void externalForward(Message message) throws Exception {
+        ExternalForwarder externalForwarder = new ExternalForwarder(message);
+        RoutingScheduler.fireForwarder(externalForwarder);
     }
-
 }

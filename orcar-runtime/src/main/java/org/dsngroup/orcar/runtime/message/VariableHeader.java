@@ -68,4 +68,9 @@ public class VariableHeader {
     public String getClassName() {
         return className;
     }
+
+    @Override
+    public String toString() {
+        return className + "\r\n\r\n";
+    }
 }
