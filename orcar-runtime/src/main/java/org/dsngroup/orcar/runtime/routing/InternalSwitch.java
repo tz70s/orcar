@@ -16,7 +16,7 @@
 
 package org.dsngroup.orcar.runtime.routing;
 
-import org.dsngroup.orcar.actor.MailBox;
+import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.runtime.ControlService;
 import org.dsngroup.orcar.runtime.message.Message;
 
@@ -60,9 +60,11 @@ public class InternalSwitch {
             // Forward this message to control service, to generate a new task event.
             // Parse this message into lower granularity.
             System.out.println("Run a new task!");
+            // The MailBoxer is transferred in Object type,
+            // which the receiver side use a specific generic type to accept it.
             controlService.runNewTask(message.getMessageHeader().getDstOrchestratorID(),
                     message.getVariableHeader().getClassName(),
-                    new MailBox(message.getMessagePayload().getMessagePayload()));
+                    new MailBoxer(message.getMessagePayload().getMessagePayload()));
         }
     }
 }

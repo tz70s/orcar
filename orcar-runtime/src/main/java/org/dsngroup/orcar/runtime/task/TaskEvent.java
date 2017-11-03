@@ -16,7 +16,7 @@
 
 package org.dsngroup.orcar.runtime.task;
 
-import org.dsngroup.orcar.actor.MailBox;
+import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.runtime.Orchestrator;
 
 /**
@@ -30,17 +30,17 @@ public class TaskEvent implements Runnable {
 
     private Byte taskEventID;
 
-    private MailBox mailBox;
+    private MailBoxer mailBoxer;
 
     /**
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
-    TaskEvent(Orchestrator orchestrator, MailBox mailBox) {
+    TaskEvent(Orchestrator orchestrator, MailBoxer mailBoxer) {
         this.taskState = TaskState.PENDING;
         this.taskEventID = orchestrator.getOrchestratorID();
         this.orchestrator = orchestrator;
-        this.mailBox = mailBox;
+        this.mailBoxer = mailBoxer;
     }
 
     /**
@@ -48,7 +48,7 @@ public class TaskEvent implements Runnable {
      */
     @Override
     public void run() {
-        orchestrator.accept(mailBox);
+        orchestrator.accept(mailBoxer);
     }
 
     /**

@@ -10,7 +10,7 @@
     <version>0.1</version>
     <modules>
         <module>orcar-runtime</module>
-        <module>orcar-orchestrator</module>
+        <module>orcar-actor</module>
         <module>orcar-eventcache</module>
         <module>orcar-connector</module>
         <module>orcar-gpio</module>

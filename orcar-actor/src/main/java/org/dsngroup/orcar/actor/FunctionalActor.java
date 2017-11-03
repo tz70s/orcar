@@ -22,8 +22,8 @@ package org.dsngroup.orcar.actor;
 public interface FunctionalActor {
     /**
      * The FunctionalActor is an actor model style interface.
-     * It's event-driven and only when the mailBox is arrived the actor will be spawned.
+     * It's event-driven and only when the mailBoxer is arrived the actor will be spawned.
      * The only method should be override is accept.
      */
-    void accept(MailBox mailBox);
+    void accept(MailBoxer mailBoxer);
 }

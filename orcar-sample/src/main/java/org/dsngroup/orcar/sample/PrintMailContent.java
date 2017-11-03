@@ -17,7 +17,7 @@
 package org.dsngroup.orcar.sample;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
-import org.dsngroup.orcar.actor.MailBox;
+import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.gpio.actuator.Actuator;
 import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
 
@@ -27,12 +27,12 @@ import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
 public class PrintMailContent implements FunctionalActor {
 
     /**
-     * Print out the received mailBox.
-     * @param mailBox received mailBox.
+     * Print out the received mailBoxer.
+     * @param mailBoxer received mailBoxer.
      */
     @Override
-    public void accept(MailBox mailBox) {
+    public void accept(MailBoxer mailBoxer) {
         Actuator<String> actuator = new FakeConsoleActuator<>();
-        actuator.actuate(mailBox.toString());
+        actuator.actuate(mailBoxer.toString());
     }
 }

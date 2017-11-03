@@ -19,7 +19,7 @@ package org.dsngroup.orcar.runtime.message;
 import java.nio.ByteBuffer;
 
 /**
- * The MailBox class is an entity of the message.
+ * The MailBoxer class is an entity of the message.
  */
 public class Message {
 
@@ -30,7 +30,7 @@ public class Message {
     private MessagePayload messagePayload;
 
     /**
-     * MailBox constructor from bytebuffer
+     * MailBoxer constructor from bytebuffer
      * @param buffer {@link ByteBuffer}
      * @throws Exception Parsing message failed exception.
      */
