@@ -40,7 +40,8 @@ public class Router {
         this.nodeID = nodeID;
         this.internalSwitch = internalSwitch;
         RoutingScheduler.configScheduler(routingThreadPoolSize);
-        routingReactor = new RoutingReactor(InetAddress.getByName("127.0.0.1"), 9222, internalSwitch);
+        routingReactor = new RoutingReactor(InetAddress.getByName("0.0.0.0"), 9222, internalSwitch);
+        System.out.println("Proxy agent is running at 0.0.0.0:9222");
         Thread reactorThread = new Thread(routingReactor);
         reactorThread.start();
     }

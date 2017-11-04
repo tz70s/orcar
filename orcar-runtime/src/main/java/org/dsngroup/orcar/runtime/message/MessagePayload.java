@@ -16,12 +16,47 @@
 
 package org.dsngroup.orcar.runtime.message;
 
+import java.nio.ByteBuffer;
+
 /**
  * MessagePayload class wrap the payload with extended functionalities.
  */
 public class MessagePayload {
 
     private String messagePayload;
+
+
+    public MessagePayload(ByteBuffer byteBuffer) {
+        // TODO: met length, instead of terminate characters
+        // TODO: Is not a correct parsing now.
+        StringBuilder messagePayloadBuilder = new StringBuilder();
+        int rcount = 0;
+        int ncount = 0;
+        while (true) {
+            // Continuous getting the byte buffer until the CRLF is match.
+            char getCharacter = (char) byteBuffer.get();
+            if (getCharacter == '\r') {
+                rcount += 1;
+            } else if (getCharacter == '\n') {
+                ncount += 1;
+            } else {
+                rcount = 0;
+                ncount = 0;
+                messagePayloadBuilder.append(getCharacter);
+            }
+            // Match \r\n\r\n
+            if (rcount == 2 && ncount == 2) {
+                break;
+            }
+
+            // TODO: Unsafe checks
+            if (byteBuffer.remaining() == 0) {
+                // TODO: Should continue to next frame.
+
+            }
+        }
+        this.messagePayload = messagePayloadBuilder.toString();
+    }
 
     /**
      * Constructor of message payload.

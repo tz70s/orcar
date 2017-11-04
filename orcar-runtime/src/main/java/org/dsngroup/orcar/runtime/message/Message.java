@@ -35,10 +35,11 @@ public class Message {
      * @throws Exception Parsing message failed exception.
      */
     public Message (ByteBuffer buffer) throws Exception {
-        // We should flip the bytebuffer outside.
+        // We should flip the byte buffer outside.
         messageHeader = new MessageHeader(buffer);
         variableHeader = new VariableHeader(buffer);
-        messagePayload = new MessagePayload(buffer.toString());
+        // TODO: handling payload in byte buffer
+        messagePayload = new MessagePayload(buffer);
     }
 
     /**

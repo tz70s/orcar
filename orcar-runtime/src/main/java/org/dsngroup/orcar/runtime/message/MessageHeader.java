@@ -81,7 +81,7 @@ public class MessageHeader {
      */
     @Override
     public String toString() {
-        byte[] bytes = {messageType, srcNodeID, srcOrchestratorID, dstNodeID, dstOrchestratorID, 0, '\r', '\n'};
+        byte[] bytes = {messageType, srcNodeID, srcOrchestratorID, dstNodeID, dstOrchestratorID, '0', '0', '0'};
         return bytes.toString();
     }
 

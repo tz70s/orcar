@@ -41,10 +41,10 @@ public class RoutingReactor implements Runnable {
 
     /**
      * Constructor, parameters will be config in another way.
-     * @param listenAddress
-     * @param listenPort
-     * @param internalSwitch
-     * @throws IOException
+     * @param listenAddress listened address.
+     * @param listenPort listened port.
+     * @param internalSwitch {@see InternalSwitch}
+     * @throws IOException socket connection exception
      */
     public RoutingReactor(InetAddress listenAddress, int listenPort, InternalSwitch internalSwitch) throws IOException {
         this.listenAddress = listenAddress;
@@ -59,10 +59,12 @@ public class RoutingReactor implements Runnable {
         serverSocketChannel.socket().bind(listenSocketAddress);
         // TODO: the key will need to be used?
         serverSocketChannel.register(serverSelector, SelectionKey.OP_ACCEPT);
+        this.internalSwitch = internalSwitch;
     }
 
     /**
      * Main selection handling.
+     * Only handle the external requests to this node.
      */
     @Override
     public void run() {
@@ -74,25 +76,28 @@ public class RoutingReactor implements Runnable {
                 // Iterate the selected keys (channel, event)
                 Iterator selectKeys = serverSelector.selectedKeys().iterator();
                 while (selectKeys.hasNext()) {
-                    SelectionKey acceptedKey = (SelectionKey) selectKeys.next();
-                    selectKeys.remove();
+                    SelectionKey selectedKey = (SelectionKey) selectKeys.next();
                     // Checkout valid or not.
-                    if (!acceptedKey.isValid()) {
+                    if (!selectedKey.isValid()) {
                         // Discard
                         continue;
                     }
                     // TODO: need to have an another acceptor thread?
-                    if (acceptedKey.isAcceptable()) {
+                    if (selectedKey.isAcceptable()) {
                         SocketChannel forwarderSocketChannel = serverSocketChannel.accept();
                         forwarderSocketChannel.configureBlocking(false);
-                        forwarderSocketChannel.register(acceptedKey.selector(),
+                        forwarderSocketChannel.register(selectedKey.selector(),
                                 SelectionKey.OP_READ);
                     }
                     // FIRE new handler in thread pool.
-                    if (acceptedKey.isReadable()) {
-                        SocketChannel forwardSocketChannel = (SocketChannel) acceptedKey.channel();
-                        RoutingScheduler.fireForwarder(new InternalForwarder(forwardSocketChannel, internalSwitch));
+                    if (selectedKey.isReadable()) {
+                        SocketChannel forwardSocketChannel = (SocketChannel) selectedKey.channel();
+                        // TODO: Thread pool can't be used currently.
+                        // RoutingScheduler.fireForwarder(new InternalForwarder(forwardSocketChannel, internalSwitch));
+                        InternalForwarder inter = new InternalForwarder(forwardSocketChannel, internalSwitch);
+                        inter.forward();
                     }
+                    selectKeys.remove();
                 }
             } catch (Exception e) {
                 e.printStackTrace();;

@@ -63,6 +63,9 @@ public class RuntimeService {
         controlService = new ControlService(taskController);
 
         // Init router and internal switch
+
+        internalSwitch = new InternalSwitch((byte) '1', router, controlService);
+
         try {
             router = new Router((byte) '1', internalSwitch, 4);
         } catch (Exception e) {
@@ -70,8 +73,6 @@ public class RuntimeService {
             e.printStackTrace();
             System.exit(1);
         }
-        internalSwitch = new InternalSwitch((byte) '1', router, controlService);
-
 
         // Init runtime scheduler
         try {
@@ -89,6 +90,7 @@ public class RuntimeService {
      * @return this, for chaining method.
      */
     public RuntimeService serve() {
+        /*
         try {
             Message message = new Message(new MessageHeader("111110\r\n"),
                     new VariableHeader("org.dsngroup.orcar.sample.SourceAndPrint"), new MessagePayload("{}"));
@@ -100,7 +102,7 @@ public class RuntimeService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        */
         return this;
     }
 

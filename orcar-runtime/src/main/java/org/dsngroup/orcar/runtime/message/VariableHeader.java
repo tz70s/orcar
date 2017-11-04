@@ -48,7 +48,9 @@ public class VariableHeader {
             if (rcount == 2 && ncount == 2) {
                 break;
             }
-            if (classNameBuilder.length() >= 40) throw new Exception("Parsing class name failed, to long!");
+            if (classNameBuilder.length() >= 80) {
+                throw new Exception("Parsing class name failed, to long!");
+            }
         }
         className = classNameBuilder.toString();
     }
