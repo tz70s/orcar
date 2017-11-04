@@ -17,7 +17,11 @@
 package org.dsngroup.orcar.runtime.routing;
 
 import org.dsngroup.orcar.runtime.message.Message;
+import org.dsngroup.orcar.runtime.message.MessageHeader;
+import org.dsngroup.orcar.runtime.message.MessagePayload;
+import org.dsngroup.orcar.runtime.message.VariableHeader;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
@@ -42,6 +46,8 @@ public class InternalForwarder implements Forwarder {
 
     /**
      * Handling message.
+     * Encode byte buffer into message here and request for a new event.
+     * To avoid any blocking occured, this is run in a thread pool.
      * TODO: The decoder should be rewrite for more robust and capable to deal with fragments.
      */
     @Override
@@ -49,19 +55,38 @@ public class InternalForwarder implements Forwarder {
         // Forward the incoming
         ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
         try {
-            byteBuffer.clear();
+            // First try, for parsing message header and variable header.
             int reads = socketChannel.read(byteBuffer);
-            // EOF
-            if (reads == -1) {
+
+            // Checkout if null reads at first.
+            if (reads < 0) {
+                // Discard
                 socketChannel.close();
                 return;
             }
+
             byteBuffer.flip();
-            Message message = new Message(byteBuffer);
+            MessageHeader messageHeader = new MessageHeader(byteBuffer);
+            VariableHeader variableHeader = new VariableHeader(byteBuffer);
+            MessagePayload messagePayload = new MessagePayload(byteBuffer);
+
+            // Continue if still have data, append on the payload.
+            byteBuffer.clear();
+            while (socketChannel.read(byteBuffer) >= 0) {
+                byteBuffer.flip();
+                // TODO: Append fragments
+            }
+            // Finished
+            Message message = new Message(messageHeader, variableHeader, messagePayload);
             internalSwitch.forward(message);
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(1);
+        } finally {
+            try {
+                socketChannel.close();
+            } catch (IOException socketCantClose) {
+                socketCantClose.printStackTrace();
+            }
         }
     }
 }

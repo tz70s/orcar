@@ -77,27 +77,27 @@ public class RoutingReactor implements Runnable {
                 Iterator selectKeys = serverSelector.selectedKeys().iterator();
                 while (selectKeys.hasNext()) {
                     SelectionKey selectedKey = (SelectionKey) selectKeys.next();
+                    selectKeys.remove();
                     // Checkout valid or not.
                     if (!selectedKey.isValid()) {
                         // Discard
                         continue;
                     }
-                    // TODO: need to have an another acceptor thread?
+                    // Dealing with accept
                     if (selectedKey.isAcceptable()) {
                         SocketChannel forwarderSocketChannel = serverSocketChannel.accept();
                         forwarderSocketChannel.configureBlocking(false);
-                        forwarderSocketChannel.register(selectedKey.selector(),
+                        forwarderSocketChannel.register(serverSelector,
                                 SelectionKey.OP_READ);
                     }
                     // FIRE new handler in thread pool.
                     if (selectedKey.isReadable()) {
                         SocketChannel forwardSocketChannel = (SocketChannel) selectedKey.channel();
-                        // TODO: Thread pool can't be used currently.
-                        // RoutingScheduler.fireForwarder(new InternalForwarder(forwardSocketChannel, internalSwitch));
-                        InternalForwarder inter = new InternalForwarder(forwardSocketChannel, internalSwitch);
-                        inter.forward();
+                        // Cancel this key to avoid next iteration.
+                        selectedKey.cancel();
+                        // Fire forwarder (the new forward socket channel) into thread pool.
+                        RoutingScheduler.fireForwarder(new InternalForwarder(forwardSocketChannel, internalSwitch));
                     }
-                    selectKeys.remove();
                 }
             } catch (Exception e) {
                 e.printStackTrace();;

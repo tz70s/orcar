@@ -56,7 +56,7 @@ public class RuntimeScheduler {
         if (runtimeThreadPoolSize == 0 && service == null) {
             throw new Exception("The configScheduler for initialized should be called first");
         }
-        // TODO: Schedule a task.
+        // TODO: Add a listener to accept this Scheduler Future for task finishing.
         service.schedule(task, 0, TimeUnit.MILLISECONDS);
     }
 
