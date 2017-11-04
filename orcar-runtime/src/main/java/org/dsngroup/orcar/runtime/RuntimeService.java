@@ -24,6 +24,9 @@ import org.dsngroup.orcar.runtime.routing.Router;
 import org.dsngroup.orcar.runtime.routing.InternalSwitch;
 import org.dsngroup.orcar.runtime.task.TaskController;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The RuntimeService is a entry point of orcar.
  */
@@ -86,9 +89,6 @@ public class RuntimeService {
      * @return this, for chaining method.
      */
     public RuntimeService serve() {
-        // Serve the runtime
-        System.out.println("Start a RuntimeService");
-
         try {
             Message message = new Message(new MessageHeader("111110\r\n"),
                     new VariableHeader("org.dsngroup.orcar.sample.SourceAndPrint"), new MessagePayload("{}"));
@@ -113,6 +113,7 @@ public class RuntimeService {
     }
 
     public static void main(String[] args) {
+
         RuntimeService srv = new RuntimeService(new RuntimeServiceContext()).serve();
     }
 }

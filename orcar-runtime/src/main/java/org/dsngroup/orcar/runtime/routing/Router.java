@@ -18,6 +18,8 @@ package org.dsngroup.orcar.runtime.routing;
 
 import org.dsngroup.orcar.runtime.message.Message;
 
+import java.net.InetAddress;
+
 /**
  * The router is response for routes the incoming connection to the target destination.
  */
@@ -26,6 +28,8 @@ public class Router {
     private Byte nodeID;
     // TODO: may be deprecated.
     private InternalSwitch internalSwitch;
+
+    private RoutingReactor routingReactor;
 
     /**
      * Constructor of router, may be modified into accept a single context.
@@ -36,10 +40,9 @@ public class Router {
         this.nodeID = nodeID;
         this.internalSwitch = internalSwitch;
         RoutingScheduler.configScheduler(routingThreadPoolSize);
-    }
-
-    private void routerSelector() {
-
+        routingReactor = new RoutingReactor(InetAddress.getByName("127.0.0.1"), 9222, internalSwitch);
+        Thread reactorThread = new Thread(routingReactor);
+        reactorThread.start();
     }
 
     /**
