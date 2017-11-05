@@ -16,8 +16,17 @@
 
 package org.dsngroup.orcar.apiserver
 
+object RemoteUtils {
+  import sys.process._
 
-object APIServer extends App {
-  RemoteUtils.pingDevice("140.112.42.89")
-  println("Entry!")
+  def pingDevice(deviceAddress: String): Unit = {
+    try {
+      val cmd = Seq("ping", deviceAddress)
+      cmd.lineStream.foreach(println)
+    } catch {
+      case e: Exception => {
+        e.printStackTrace()
+      }
+    }
+  }
 }
