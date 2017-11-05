@@ -49,6 +49,7 @@ public class ControlService {
             // Generate a new task event
             TaskEvent task = TaskFactory.createTaskEvent(orc, mailBoxer);
             taskController.requestToFireTask(task);
+
         } catch (Exception e) {
             logger.error("Orchestration instantiation failed");
             logger.error(e.getMessage());

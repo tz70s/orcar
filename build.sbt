@@ -41,7 +41,8 @@ lazy val orcarGpio = Project("orcar-gpio", file("orcar-gpio"))
 
 lazy val orcarRuntime = Project("orcar-runtime", file("orcar-runtime"))
   .dependsOn(
-    orcarActor
+    orcarActor,
+    orcarGpio
   )
   .settings(
     commonSettings,

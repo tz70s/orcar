@@ -16,6 +16,9 @@
 
 package org.dsngroup.orcar.runtime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.UUID;
 import java.net.URL;
 import java.io.File;
@@ -30,6 +33,8 @@ public class RuntimeServiceContext {
 
     private URL localClassPath;
 
+    private static final Logger logger = LoggerFactory.getLogger(RuntimeService.class);
+
     /**
      * Default constructor of RuntimeServiceContext
      */
@@ -37,10 +42,9 @@ public class RuntimeServiceContext {
         this.runtimeServiceID = UUID.randomUUID();
         this.runtimeThreadPoolSize = 4;
         try {
-            this.localClassPath = new File("/Users/Tzuchiao/workspace/java/orcar/orcar-sample/target/classes/").toURI().toURL();
+            this.localClassPath = new File("/Users/Tzuchiao/workspace/java/orcar/orcar-sample/target/scala-2.12/classes/").toURI().toURL();
         } catch (Exception e) {
-            // TODO: gracefully handle.
-            e.printStackTrace();
+            logger.error("Local class path translation failed" + e.getMessage());
         }
     }
 
@@ -55,8 +59,7 @@ public class RuntimeServiceContext {
         try {
             this.localClassPath = new File(localClassPath).toURI().toURL();
         } catch (Exception e) {
-            // TODO: gracefully handle.
-            e.printStackTrace();
+            logger.error("Local class path translation failed" + e.getMessage());
         }
     }
 

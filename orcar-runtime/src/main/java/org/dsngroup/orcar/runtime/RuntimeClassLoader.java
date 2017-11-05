@@ -16,6 +16,9 @@
 
 package org.dsngroup.orcar.runtime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URLClassLoader;
 import java.net.URL;
 
@@ -26,6 +29,8 @@ public class RuntimeClassLoader {
 
     // The Default Class Loader
     private static ClassLoader defaultLoader;
+
+    private static final Logger logger = LoggerFactory.getLogger(RuntimeClassLoader.class);
 
     /**
      * (Must) Initialized this singleton class loader.
@@ -41,8 +46,8 @@ public class RuntimeClassLoader {
      * @return Object, to be cast.
      * @throws ClassNotFoundException Must be catch.
      */
-    public static Object loadClass(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-        // TODO: Checkout if defaultloader initialized?
+    public static Object loadClass(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        // TODO: Checkout if default loader initialized?
         return defaultLoader.loadClass(className).newInstance();
     }
 
