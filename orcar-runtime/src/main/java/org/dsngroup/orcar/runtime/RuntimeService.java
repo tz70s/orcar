@@ -72,7 +72,7 @@ public class RuntimeService {
      * @return this, for chaining method.
      */
     public RuntimeService serve() {
-        logger.info("Serving runtime.");
+        logger.info("Serving runtime!");
         return this;
     }
 
