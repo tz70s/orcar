@@ -25,23 +25,23 @@ import java.util.concurrent.TimeUnit;
  */
 public class RoutingScheduler {
 
-    private static int routingThreadPoolSize;
+    private int routingThreadPoolSize;
 
-    private static ScheduledExecutorService service;
+    private ScheduledExecutorService service;
 
     /**
      * configScheduler is responsive for config a ThreadPool
      * @param routingThreadPoolSize The thread pool size.
      * @throws Exception Throws if the thread pool size is not correct.
      */
-    public static void configScheduler(int routingThreadPoolSize) throws Exception {
+    private void configScheduler(int routingThreadPoolSize) throws Exception {
 
         // The routingThreadPoolSize is limited into 8.
         if (routingThreadPoolSize > 8 || routingThreadPoolSize < 1) {
             throw new Exception("Incorrect runtimeThreadPoolSize, it is limited from 1 to 8");
         }
-        RoutingScheduler.routingThreadPoolSize = routingThreadPoolSize;
-        RoutingScheduler.service = Executors.newScheduledThreadPool(routingThreadPoolSize);
+        this.routingThreadPoolSize = routingThreadPoolSize;
+        this.service = Executors.newScheduledThreadPool(routingThreadPoolSize);
     }
 
     /**
@@ -49,14 +49,16 @@ public class RoutingScheduler {
      * @param forwarder {@see Forwarder}
      * @throws Exception Throws if the scheduler is not initialized.
      */
-    public synchronized static void fireForwarder(Forwarder forwarder) throws Exception {
-        // TODO: Consider a better way, instead of synchronized the big block.
-        if (routingThreadPoolSize == 0 && service == null) {
-            throw new Exception("The configScheduler for initialized should be called first");
-        }
-
+    public synchronized void fireForwarder(Forwarder forwarder) throws Exception {
         service.schedule(forwarder, 0, TimeUnit.MILLISECONDS);
     }
 
-    private RoutingScheduler(){}
+    /**
+     * Constructor, call config scheduler
+     * @param routingThreadPoolSize the routing thread pool size.
+     * @throws Exception if the thread pool size is not correct.
+     */
+    public RoutingScheduler(int routingThreadPoolSize) throws Exception {
+        configScheduler(routingThreadPoolSize);
+    }
 }

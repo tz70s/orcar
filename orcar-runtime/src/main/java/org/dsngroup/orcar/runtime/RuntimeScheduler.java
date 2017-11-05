@@ -27,23 +27,23 @@ import java.util.concurrent.TimeUnit;
  */
 public class RuntimeScheduler {
 
-    private static int runtimeThreadPoolSize;
+    private int runtimeThreadPoolSize;
 
-    private static ScheduledExecutorService service;
+    private ScheduledExecutorService service;
 
     /**
      * configScheduler is responsive for config a RuntimeSchedulerThreadPool
      * @param runtimeThreadPoolSize The thread pool size.
      * @throws Exception Throws if the thread pool size is not correct.
      */
-    public static void configScheduler(int runtimeThreadPoolSize) throws Exception {
+    private void configScheduler(int runtimeThreadPoolSize) throws Exception {
 
         // The runtimeThreadPoolSize is limited into 8.
         if (runtimeThreadPoolSize > 8 || runtimeThreadPoolSize < 1) {
             throw new Exception("Incorrect runtimeThreadPoolSize, it is limited from 1 to 8");
         }
-        RuntimeScheduler.runtimeThreadPoolSize = runtimeThreadPoolSize;
-        RuntimeScheduler.service = Executors.newScheduledThreadPool(runtimeThreadPoolSize);
+        this.runtimeThreadPoolSize = runtimeThreadPoolSize;
+        service = Executors.newScheduledThreadPool(runtimeThreadPoolSize);
     }
 
     /**
@@ -51,14 +51,25 @@ public class RuntimeScheduler {
      * @param task Desired scheduled task.
      * @throws Exception Throws if the scheduler is not initialized.
      */
-    public synchronized static void fireTask(TaskEvent task) throws Exception {
-        // TODO: Consider a better way, instead of synchronized the big block.
-        if (runtimeThreadPoolSize == 0 && service == null) {
-            throw new Exception("The configScheduler for initialized should be called first");
-        }
+    public synchronized void fireTask(TaskEvent task) throws Exception {
         // TODO: Add a listener to accept this Scheduler Future for task finishing.
         service.schedule(task, 0, TimeUnit.MILLISECONDS);
     }
 
-    private RuntimeScheduler(){}
+    /**
+     * Constructor of runtime scheduler.
+     * @param runtimeThreadPoolSize The thread pool size.
+     * @throws Exception Throws if the thread pool size is not correct.
+     */
+    public RuntimeScheduler(int runtimeThreadPoolSize) throws Exception {
+        configScheduler(runtimeThreadPoolSize);
+    }
+
+    /**
+     * Default constructor - 4 threads.
+     * @throws Exception Throws if the thread pool size is not correct.
+     */
+    public RuntimeScheduler() throws Exception {
+        this(4);
+    }
 }

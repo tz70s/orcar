@@ -17,6 +17,8 @@
 package org.dsngroup.orcar.runtime.routing;
 
 import org.dsngroup.orcar.runtime.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -26,6 +28,8 @@ import java.nio.channels.SocketChannel;
 public class ExternalForwarder implements Forwarder {
 
     private Message message;
+
+    private static final Logger logger = LoggerFactory.getLogger(ExternalForwarder.class);
 
     /**
      * Constructor of ExternalForwarder, encapsulate the forwarding message.
@@ -46,7 +50,7 @@ public class ExternalForwarder implements Forwarder {
             targetAddress = RoutingTable.lookUp(message.getMessageHeader().getDstNodeID());
         } catch (Exception e) {
             // Discard
-            e.printStackTrace();
+            logger.error("Look up routing table error! " + e.getMessage());
             return;
         }
 
@@ -59,8 +63,6 @@ public class ExternalForwarder implements Forwarder {
             socketChannel.connect(new InetSocketAddress(targetAddress, 6257));
             String messageRawString = message.toString();
             ByteBuffer buffer = ByteBuffer.allocate(messageRawString.length());
-            // TODO: May not need to clear, actually.
-            buffer.clear();
             buffer.put(messageRawString.getBytes());
             // Makes buffer position goes back.
             buffer.flip();
@@ -71,15 +73,14 @@ public class ExternalForwarder implements Forwarder {
             }
         } catch (Exception e) {
             // Discard
-            // TODO: log
-            e.printStackTrace();
+            logger.error("Discard the wrong external forward. " + e.getMessage());
+
         } finally {
             try {
                 socketChannel.close();
             } catch (Exception e) {
                 // Discard
-                // TODO: log
-                e.printStackTrace();
+                logger.error("Can't close the socket." + e.getMessage());
             }
         }
     }

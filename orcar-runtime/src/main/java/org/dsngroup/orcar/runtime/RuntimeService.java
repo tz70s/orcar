@@ -16,13 +16,7 @@
 
 package org.dsngroup.orcar.runtime;
 
-import org.dsngroup.orcar.runtime.message.Message;
-import org.dsngroup.orcar.runtime.message.MessageHeader;
-import org.dsngroup.orcar.runtime.message.MessagePayload;
-import org.dsngroup.orcar.runtime.message.VariableHeader;
 import org.dsngroup.orcar.runtime.routing.Router;
-import org.dsngroup.orcar.runtime.routing.InternalSwitch;
-import org.dsngroup.orcar.runtime.task.TaskController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +30,9 @@ public class RuntimeService {
 
     private ControlService controlService;
 
-    private TaskController taskController;
-
     private Router router;
 
-    private InternalSwitch internalSwitch;
+    private static final Logger logger = LoggerFactory.getLogger(RuntimeService.class);
 
     /**
      * RuntimeService constructs an entry runtime.
@@ -57,31 +49,21 @@ public class RuntimeService {
         // Init RuntimeClassLoader
         RuntimeClassLoader.init(runtimeServiceContext.getLocalClassPath());
 
-        // Init a taskController
         // TODO: Need to have a better place.
-        taskController = new TaskController();
-        controlService = new ControlService(taskController);
-
-        // Init router and internal switch
-
-        internalSwitch = new InternalSwitch((byte) '1', router, controlService);
+        controlService = new ControlService(runtimeServiceContext);
 
         try {
-            router = new Router((byte) '1', internalSwitch, 4);
+            router = new Router((byte) '1', controlService, 4);
         } catch (Exception e) {
-            // TODO: use the default value internal.
-            e.printStackTrace();
-            System.exit(1);
-        }
+            logger.error("Router settings failed. " + e.getMessage());
 
-        // Init runtime scheduler
-        try {
-            RuntimeScheduler.configScheduler(runtimeServiceContext.getRuntimeThreadPoolSize());
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Incorrect thread pool size.");
-            // drop
-            System.exit(1);
+            // Use the default routing thread pool size.
+            try {
+                router = new Router((byte) '1', controlService, 4);
+            } catch (Exception finalex) {
+                logger.error("Not recoverable, close out program. " + finalex.getMessage());
+                System.exit(1);
+            }
         }
     }
 
@@ -90,19 +72,7 @@ public class RuntimeService {
      * @return this, for chaining method.
      */
     public RuntimeService serve() {
-        /*
-        try {
-            Message message = new Message(new MessageHeader("111110\r\n"),
-                    new VariableHeader("org.dsngroup.orcar.sample.SourceAndPrint"), new MessagePayload("{}"));
-            internalSwitch.forward(message);
-            Message anotherMessage = new Message(new MessageHeader("111120\r\n"),
-                    new VariableHeader("org.dsngroup.orcar.sample.PrintMailContent"),
-                    new MessagePayload("Hello"));
-            internalSwitch.forward(anotherMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
+        logger.info("Serving runtime.");
         return this;
     }
 
@@ -115,7 +85,6 @@ public class RuntimeService {
     }
 
     public static void main(String[] args) {
-
         RuntimeService srv = new RuntimeService(new RuntimeServiceContext()).serve();
     }
 }

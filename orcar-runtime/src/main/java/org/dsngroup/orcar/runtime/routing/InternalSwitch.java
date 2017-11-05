@@ -47,17 +47,16 @@ public class InternalSwitch {
     /**
      * Forward the message.
      * @param message {@link Message}
-     * @throws {@link Exception} the message deserialization failed.
+     * @throws Exception the message deserialization failed.
      */
     public void forward(Message message) throws Exception {
         if (message.getMessageHeader().getDstNodeID() != nodeID) {
             // External message, forward to the router.
             router.externalForward(message);
-            System.out.println("Go to external message");
         } else {
             // Forward this message to control service, to generate a new task event.
             // Parse this message into lower granularity.
-            System.out.println("Run a new task!");
+
             // The MailBoxer is transferred in Object type,
             // which the receiver side use a specific generic type to accept it.
             controlService.runNewTask(message.getMessageHeader().getDstOrchestratorID(),

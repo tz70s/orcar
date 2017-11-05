@@ -21,13 +21,19 @@ import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.runtime.task.TaskController;
 import org.dsngroup.orcar.runtime.task.TaskEvent;
 import org.dsngroup.orcar.runtime.task.TaskFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The ControlService is used as a mediator for handling external requests.
  */
 public class ControlService {
 
-    private TaskController associatedTaskController;
+    private TaskController taskController;
+
+    private RuntimeScheduler runtimeScheduler;
+
+    private static final Logger logger = LoggerFactory.getLogger(ControlService.class);
 
     /**
      * The runNewTask of ControlService, instantiate an {@link Orchestrator} and {@link FunctionalActor}
@@ -42,10 +48,10 @@ public class ControlService {
             Orchestrator orc = new Orchestrator(orchestratorID, RuntimeClassLoader.loadClass(className));
             // Generate a new task event
             TaskEvent task = TaskFactory.createTaskEvent(orc, mailBoxer);
-            associatedTaskController.requestToFireTask(task);
+            taskController.requestToFireTask(task);
         } catch (Exception e) {
-            System.out.println("Orchestration instantiation failed");
-            e.printStackTrace();
+            logger.error("Orchestration instantiation failed");
+            logger.error(e.getMessage());
             // Drop this request.
             return;
         }
@@ -53,10 +59,15 @@ public class ControlService {
 
     // TODO: The TaskController and ControlService may consider an another instantiate way.
     /**
-     * Constructor, which carry with an associatedTaskController
-     * @param associatedTaskController {@link TaskController}
+     * Constructor, which carry with an taskController
      */
-    public ControlService(TaskController associatedTaskController) {
-        this.associatedTaskController = associatedTaskController;
+    public ControlService(RuntimeServiceContext runtimeServiceContext) {
+        try {
+            runtimeScheduler = new RuntimeScheduler(runtimeServiceContext.getRuntimeThreadPoolSize());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            System.exit(1);
+        }
+        this.taskController = new TaskController(runtimeScheduler);
     }
 }

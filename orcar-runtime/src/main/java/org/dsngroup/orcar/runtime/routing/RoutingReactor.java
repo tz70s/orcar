@@ -16,6 +16,9 @@
 
 package org.dsngroup.orcar.runtime.routing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -39,6 +42,10 @@ public class RoutingReactor implements Runnable {
     // TODO: May be removed.
     private InternalSwitch internalSwitch;
 
+    private RoutingScheduler routingScheduler;
+
+    private static final Logger logger = LoggerFactory.getLogger(RoutingReactor.class);
+
     /**
      * Constructor, parameters will be config in another way.
      * @param listenAddress listened address.
@@ -46,9 +53,12 @@ public class RoutingReactor implements Runnable {
      * @param internalSwitch {@see InternalSwitch}
      * @throws IOException socket connection exception
      */
-    public RoutingReactor(InetAddress listenAddress, int listenPort, InternalSwitch internalSwitch) throws IOException {
+    public RoutingReactor(InetAddress listenAddress, int listenPort, InternalSwitch internalSwitch,
+                          RoutingScheduler routingScheduler) throws IOException {
         this.listenAddress = listenAddress;
         this.listenPort = listenPort;
+        this.internalSwitch = internalSwitch;
+        this.routingScheduler = routingScheduler;
 
         // Initialized selector.
         this.serverSelector = SelectorProvider.provider().openSelector();
@@ -59,7 +69,6 @@ public class RoutingReactor implements Runnable {
         serverSocketChannel.socket().bind(listenSocketAddress);
         // TODO: the key will need to be used?
         serverSocketChannel.register(serverSelector, SelectionKey.OP_ACCEPT);
-        this.internalSwitch = internalSwitch;
     }
 
     /**
@@ -96,11 +105,11 @@ public class RoutingReactor implements Runnable {
                         // Cancel this key to avoid next iteration.
                         selectedKey.cancel();
                         // Fire forwarder (the new forward socket channel) into thread pool.
-                        RoutingScheduler.fireForwarder(new InternalForwarder(forwardSocketChannel, internalSwitch));
+                        routingScheduler.fireForwarder(new InternalForwarder(forwardSocketChannel, internalSwitch));
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();;
+                logger.error("Selector error! " + e.getMessage());
             }
         }
     }

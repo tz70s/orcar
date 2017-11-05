@@ -20,6 +20,8 @@ import org.dsngroup.orcar.runtime.message.Message;
 import org.dsngroup.orcar.runtime.message.MessageHeader;
 import org.dsngroup.orcar.runtime.message.MessagePayload;
 import org.dsngroup.orcar.runtime.message.VariableHeader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -33,6 +35,8 @@ public class InternalForwarder implements Forwarder {
     private SocketChannel socketChannel;
 
     private InternalSwitch internalSwitch;
+
+    private static final Logger logger = LoggerFactory.getLogger(InternalForwarder.class);
 
     /**
      * TODO: Parameters may be reconfigured.
@@ -80,12 +84,12 @@ public class InternalForwarder implements Forwarder {
             Message message = new Message(messageHeader, variableHeader, messagePayload);
             internalSwitch.forward(message);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             try {
                 socketChannel.close();
             } catch (IOException socketCantClose) {
-                socketCantClose.printStackTrace();
+                logger.error("Socket can't close! ", socketCantClose.getMessage());
             }
         }
     }

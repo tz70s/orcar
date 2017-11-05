@@ -26,6 +26,8 @@ import org.dsngroup.orcar.runtime.RuntimeScheduler;
  */
 public class TaskController {
 
+    private RuntimeScheduler runtimeScheduler;
+
     /**
      * Request to fire a task.
      * @param task {@link TaskEvent}
@@ -35,7 +37,7 @@ public class TaskController {
         // Mark the task into pending state.
         task.setTaskState(TaskState.PENDING);
         // TODO: Should create a listener to check the task state?
-        RuntimeScheduler.fireTask(task);
+        runtimeScheduler.fireTask(task);
         TaskRegistry.registerTaskEvent(task);
     }
 
@@ -51,9 +53,10 @@ public class TaskController {
     }
 
     /**
-     * To duplication the load.
+     * Contructor, accept a runtime scheduler.
+     * @param runtimeScheduler {@see RuntimeScheduler}
      */
-    public TaskController() {
-        // No internal state need to keep, currently.
+    public TaskController(RuntimeScheduler runtimeScheduler) {
+        this.runtimeScheduler = runtimeScheduler;
     }
 }

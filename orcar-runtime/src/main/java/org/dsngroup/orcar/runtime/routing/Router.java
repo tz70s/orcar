@@ -16,7 +16,10 @@
 
 package org.dsngroup.orcar.runtime.routing;
 
+import org.dsngroup.orcar.runtime.ControlService;
 import org.dsngroup.orcar.runtime.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 
@@ -29,19 +32,31 @@ public class Router {
     // TODO: may be deprecated.
     private InternalSwitch internalSwitch;
 
+    private RoutingScheduler routingScheduler;
     private RoutingReactor routingReactor;
+
+    private String listenAddress;
+
+    private int listenPort;
+
+    private static final Logger logger = LoggerFactory.getLogger(Router.class);
 
     /**
      * Constructor of router, may be modified into accept a single context.
      * @param nodeID
-     * @param internalSwitch
+     * @param controlService
+     * @param routingThreadPoolSize
      */
-    public Router(Byte nodeID, InternalSwitch internalSwitch, int routingThreadPoolSize) throws Exception {
+    public Router(Byte nodeID, ControlService controlService, int routingThreadPoolSize) throws Exception {
         this.nodeID = nodeID;
-        this.internalSwitch = internalSwitch;
-        RoutingScheduler.configScheduler(routingThreadPoolSize);
-        routingReactor = new RoutingReactor(InetAddress.getByName("0.0.0.0"), 9222, internalSwitch);
-        System.out.println("Proxy agent is running at 0.0.0.0:9222");
+        // Propagate into internal switch
+        internalSwitch = new InternalSwitch(nodeID, this, controlService);
+        routingScheduler = new RoutingScheduler(routingThreadPoolSize);
+        this.listenAddress = "0.0.0.0";
+        this.listenPort = 9222;
+        routingReactor = new RoutingReactor(InetAddress.getByName(listenAddress), listenPort, internalSwitch,
+                routingScheduler);
+        logger.info("Proxy agent is running at " + listenAddress + ":" + listenPort);
         Thread reactorThread = new Thread(routingReactor);
         reactorThread.start();
     }
@@ -53,6 +68,6 @@ public class Router {
      */
     public void externalForward(Message message) throws Exception {
         ExternalForwarder externalForwarder = new ExternalForwarder(message);
-        RoutingScheduler.fireForwarder(externalForwarder);
+        routingScheduler.fireForwarder(externalForwarder);
     }
 }
