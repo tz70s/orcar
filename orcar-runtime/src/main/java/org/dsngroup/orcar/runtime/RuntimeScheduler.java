@@ -17,9 +17,11 @@
 package org.dsngroup.orcar.runtime;
 
 import org.dsngroup.orcar.runtime.task.TaskEvent;
+import org.dsngroup.orcar.runtime.task.TaskState;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,9 +53,9 @@ public class RuntimeScheduler {
      * @param task Desired scheduled task.
      * @throws Exception Throws if the scheduler is not initialized.
      */
-    public synchronized void fireTask(TaskEvent task) throws Exception {
+    public synchronized ScheduledFuture<?> fireTask(TaskEvent task) throws Exception {
         // TODO: Add a listener to accept this Scheduler Future for task finishing.
-        service.schedule(task, 0, TimeUnit.MILLISECONDS);
+        return service.schedule(task, 0, TimeUnit.MILLISECONDS);
     }
 
     /**

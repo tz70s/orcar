@@ -28,7 +28,7 @@ import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
  */
 public class SourceAndPrint implements FunctionalActor {
     @Override
-    public void accept(MailBoxer mailBoxer) {
+    public void accept(MailBoxer mailBoxer) throws Exception {
         // Ignore the incoming mailBoxer.
         Sensor<Double> sourceSensor = new FakeTemperatureSensor();
         Actuator<Double> actuator = new FakeConsoleActuator<>();

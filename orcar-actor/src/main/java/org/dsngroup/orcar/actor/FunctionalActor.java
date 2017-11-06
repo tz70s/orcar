@@ -25,5 +25,5 @@ public interface FunctionalActor {
      * It's event-driven and only when the mailBoxer is arrived the actor will be spawned.
      * The only method should be override is accept.
      */
-    void accept(MailBoxer mailBoxer);
+    void accept(MailBoxer mailBoxer) throws Exception;
 }

@@ -20,19 +20,29 @@ import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.gpio.actuator.Actuator;
 import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
+import org.dsngroup.orcar.gpio.sensor.FakeTemperatureSensor;
+import org.dsngroup.orcar.gpio.sensor.Sensor;
 
 /**
- * Sample for observing the functionality of event-driven(data-flow) programming.
+ * Simple program - source from sensor and output signal to actuator.
  */
-public class PrintMailContent implements FunctionalActor {
-
-    /**
-     * Print out the received mailBoxer.
-     * @param mailBoxer received mailBoxer.
-     */
+public class SourceAndPrintTenTimes implements FunctionalActor {
     @Override
     public void accept(MailBoxer mailBoxer) throws Exception {
-        Actuator<String> actuator = new FakeConsoleActuator<>();
-        actuator.actuate(mailBoxer.toString());
+        // Ignore the incoming mailBoxer.
+        Sensor<Double> sourceSensor = new FakeTemperatureSensor();
+        Actuator<Double> actuator = new FakeConsoleActuator<>();
+        int count = 0;
+        // Print
+        while (count < 10) {
+            try {
+                Thread.sleep(1000);
+                actuator.actuate(sourceSensor.sense());
+                count++;
+            } catch (Exception e) {
+                // Ignore the interrupted exception
+                e.printStackTrace();
+            }
+        }
     }
 }

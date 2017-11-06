@@ -16,35 +16,30 @@
 
 package org.dsngroup.orcar.runtime.task;
 
-import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.runtime.Orchestrator;
-
-import java.util.Set;
-import java.util.HashSet;
 
 /**
  * Mostly to avoid identifier, the task should use the factory pattern for create {@link TaskEvent}
  */
 public class TaskFactory {
 
-    private static Set<Byte> orchestratorIDSet = new HashSet<>();
-
-    // I think the request to generate a task may be single threaded.
-
     /**
      * Create a task event
      * @param orchestrator {@link Orchestrator}
-     * @param mailBoxer {@link MailBoxer}
+     * @param messagePayload {@link org.dsngroup.orcar.runtime.message.MessagePayload}
      * @return {@link TaskEvent}
      * @throws Exception Need to be actually catch if the repeat orchestrator id.
      */
-    public static TaskEvent createTaskEvent(Orchestrator orchestrator, MailBoxer mailBoxer) throws Exception {
-        // To avoid double creation of a task, check Orchestrator ID if contains.
-        if (orchestratorIDSet.contains(orchestrator.getOrchestratorID())) {
-            throw new Exception("The Orchestrator is already exists");
+    public static TaskEvent createTaskEvent(Orchestrator orchestrator, String messagePayload) throws Exception {
+        TaskEvent newTaskEvent;
+        // Checkout if the task event existed.
+        if (TaskRegistry.containTaskEvent(orchestrator.getOrchestratorID())) {
+            newTaskEvent = TaskRegistry.getTaskEvent(orchestrator.getOrchestratorID());
+            newTaskEvent.updateMessagePayload(messagePayload);
+        } else {
+            newTaskEvent = new TaskEvent(orchestrator, messagePayload);
         }
-        orchestratorIDSet.add(orchestrator.getOrchestratorID());
-        return new TaskEvent(orchestrator, mailBoxer);
+        return newTaskEvent;
     }
 
     private TaskFactory() {}

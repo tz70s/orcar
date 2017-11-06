@@ -33,21 +33,43 @@ public class TaskRegistry {
      * @param task {@link TaskEvent}
      */
     public static void registerTaskEvent(TaskEvent task) {
-        registryMemoryPool.put(task.getTaskEventID(), task);
+        registryMemoryPool.put(task.getOrchestrator().getOrchestratorID(), task);
     }
 
     /**
      * Get the current state of an task.
-     * @param taskEventID The unique ID of TaskEvent which is also the orchestrator ID.
+     * @param orchestratorID {@see Orchestrator}
      * @return {@link TaskState}
      */
-    public static synchronized TaskState getTaskEventState(Byte taskEventID) throws Exception {
+    public static synchronized TaskState getTaskEventState(Byte orchestratorID) throws Exception {
         // TODO: may need a better lock.
-        TaskEvent tmpBindingTaskEvent = registryMemoryPool.get(taskEventID);
+        TaskEvent tmpBindingTaskEvent = registryMemoryPool.get(orchestratorID);
         if (tmpBindingTaskEvent == null) {
             throw new Exception("No such task event.");
         }
         return tmpBindingTaskEvent.getTaskState();
+    }
+
+    /**
+     * Report contain task event or not
+     * @param orchestratorID {@link org.dsngroup.orcar.runtime.Orchestrator}
+     * @return contains or not
+     */
+    public static boolean containTaskEvent(Byte orchestratorID) {
+        return registryMemoryPool.containsKey(orchestratorID);
+    }
+
+    /**
+     * Get task event from orchgestrator id
+     * @param orchestratorID {@link org.dsngroup.orcar.runtime.Orchestrator}
+     * @return {@link TaskEvent}
+     * @throws Exception checkout if the task existed or not.
+     */
+    public static TaskEvent getTaskEvent(Byte orchestratorID) throws Exception {
+        if (!containTaskEvent(orchestratorID)) {
+            throw new Exception("Should checkout the task event existed or not.");
+        }
+        return registryMemoryPool.get(orchestratorID);
     }
 
     // Singleton

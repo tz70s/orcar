@@ -24,7 +24,7 @@ import org.dsngroup.orcar.gpio.actuator.FakeConsoleActuator;
 /**
  * Sample for observing the functionality of event-driven(data-flow) programming.
  */
-public class PrintMailContent implements FunctionalActor {
+public class PrintMailContentTenTimes implements FunctionalActor {
 
     /**
      * Print out the received mailBoxer.
@@ -32,7 +32,12 @@ public class PrintMailContent implements FunctionalActor {
      */
     @Override
     public void accept(MailBoxer mailBoxer) throws Exception {
-        Actuator<String> actuator = new FakeConsoleActuator<>();
-        actuator.actuate(mailBoxer.toString());
+        int count = 0;
+        while (count < 10) {
+            Actuator<String> actuator = new FakeConsoleActuator<>();
+            actuator.actuate(mailBoxer.toString());
+            Thread.sleep(2000);
+            count++;
+        }
     }
 }

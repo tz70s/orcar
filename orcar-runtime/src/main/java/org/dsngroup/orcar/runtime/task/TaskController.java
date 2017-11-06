@@ -16,6 +16,7 @@
 
 package org.dsngroup.orcar.runtime.task;
 
+import org.dsngroup.orcar.runtime.Orchestrator;
 import org.dsngroup.orcar.runtime.RuntimeScheduler;
 
 /**
@@ -34,8 +35,6 @@ public class TaskController {
      * @throws Exception The exception is thrown as an error from request failed, it should be catch.
      */
     public void requestToFireTask(TaskEvent task) throws Exception {
-        // Mark the task into pending state.
-        task.setTaskState(TaskState.PENDING);
         // TODO: Should create a listener to check the task state?
         runtimeScheduler.fireTask(task);
         TaskRegistry.registerTaskEvent(task);
@@ -43,7 +42,7 @@ public class TaskController {
 
     /**
      * Request a task from a ID.
-     * @param orchestratorID the unique orchestratorID.
+     * @param orchestratorID see {@link Orchestrator}.
      * @return {@link TaskState}
      * @throws Exception Throws if the error occurred on get state from registry, it should be catch.
      */

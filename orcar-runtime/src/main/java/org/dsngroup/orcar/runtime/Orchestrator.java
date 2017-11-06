@@ -19,7 +19,7 @@ package org.dsngroup.orcar.runtime;
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.MailBoxer;
 
-public class Orchestrator {
+public class Orchestrator implements Comparable<Orchestrator> {
     private Byte orchestratorID;
 
     private FunctionalActor orchestratorFunciton;
@@ -32,7 +32,7 @@ public class Orchestrator {
         return orchestratorID;
     }
 
-    public void accept(MailBoxer mailBoxer) {
+    public void accept(MailBoxer mailBoxer) throws Exception {
         orchestratorFunciton.accept(mailBoxer);
     }
 
@@ -43,5 +43,51 @@ public class Orchestrator {
     public Orchestrator(Byte orchestratorID, Object orchestratorFunctions) throws Exception {
         this.orchestratorID = orchestratorID;
         this.orchestratorFunciton = (FunctionalActor) orchestratorFunctions;
+    }
+
+    /**
+     * Override hashCode.
+     * @return hashcode
+     */
+    @Override
+    public int hashCode() {
+        return 301 + 7 * (int) orchestratorID;
+    }
+
+    /**
+     * Override equals for compare.
+     * @param another another orchestrator.
+     * @return boolean
+     */
+    @Override
+    public boolean equals(Object another) {
+        if (another == null) {
+            return false;
+        } else if (another.getClass() != this.getClass()) {
+            return false;
+        } else {
+            Orchestrator anotherOrchestrator = (Orchestrator) another;
+            if (anotherOrchestrator.orchestratorID == orchestratorID) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Override compareTo as Comparable
+     * @param another another {@see Orchestrator}
+     * @return compare integer
+     */
+    @Override
+    public int compareTo(Orchestrator another) {
+        if (orchestratorID < another.orchestratorID) {
+            return -1;
+        } else if (orchestratorID > another.orchestratorID) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

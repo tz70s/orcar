@@ -57,11 +57,10 @@ public class InternalSwitch {
             // Forward this message to control service, to generate a new task event.
             // Parse this message into lower granularity.
 
-            // The MailBoxer is transferred in Object type,
-            // which the receiver side use a specific generic type to accept it.
+            // The mail boxer will be propagated to task event to be initialized.
             controlService.runNewTask(message.getMessageHeader().getDstOrchestratorID(),
                     message.getVariableHeader().getClassName(),
-                    new MailBoxer(message.getMessagePayload().getMessagePayload()));
+                    message.getMessagePayload().getMessagePayload());
         }
     }
 }

@@ -18,6 +18,8 @@ package org.dsngroup.orcar.runtime.task;
 
 import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.runtime.Orchestrator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A TaskEvent is an event entity for registered in TaskRegistry.
@@ -28,19 +30,18 @@ public class TaskEvent implements Runnable {
 
     private Orchestrator orchestrator;
 
-    private Byte taskEventID;
+    private static final Logger logger = LoggerFactory.getLogger(TaskEvent.class);
 
-    private MailBoxer mailBoxer;
+    private String messagePayload;
 
     /**
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
-    TaskEvent(Orchestrator orchestrator, MailBoxer mailBoxer) {
+    TaskEvent(Orchestrator orchestrator, String messagePayload) throws Exception {
         this.taskState = TaskState.PENDING;
-        this.taskEventID = orchestrator.getOrchestratorID();
         this.orchestrator = orchestrator;
-        this.mailBoxer = mailBoxer;
+        this.messagePayload = messagePayload;
     }
 
     /**
@@ -48,7 +49,28 @@ public class TaskEvent implements Runnable {
      */
     @Override
     public void run() {
-        orchestrator.accept(mailBoxer);
+        synchronized (this) {
+            while (taskState == TaskState.RUNNING) {
+                try {
+                    // TODO: Seems like no need to wait and notify.
+                    wait();
+                } catch (InterruptedException e) {
+                    logger.error("Interrupted. " + e.getMessage());
+                }
+            }
+            // Set to running state
+            taskState = TaskState.RUNNING;
+            try {
+                MailBoxer mailBoxer = new MailBoxer(messagePayload);
+                orchestrator.accept(mailBoxer);
+                taskState = TaskState.FINISHED;
+            } catch (Exception e) {
+                logger.error("Internal error of functional actor" + e.getMessage());
+                taskState = TaskState.FAILED;
+            } finally {
+                notify();
+            }
+        }
     }
 
     /**
@@ -60,18 +82,18 @@ public class TaskEvent implements Runnable {
     }
 
     /**
-     * Set the taskState of task event.
-     * @param taskState {@link TaskState}
+     * Update message for the new existed task event.
+     * @param messagePayload {@link org.dsngroup.orcar.runtime.message.MessagePayload}
      */
-    public void setTaskState(TaskState taskState) {
-        this.taskState = taskState;
+    public void updateMessagePayload(String messagePayload) {
+        this.messagePayload = messagePayload;
     }
 
     /**
-     * Get the unique ID of this task event, which is equivalent to the orchestrator.
-     * @return taskEventID.
+     * Get the wrapped orchestrator.
+     * @return {@link Orchestrator}
      */
-    public Byte getTaskEventID() {
-        return taskEventID;
+    public Orchestrator getOrchestrator() {
+        return orchestrator;
     }
 }

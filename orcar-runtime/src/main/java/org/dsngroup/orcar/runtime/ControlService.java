@@ -40,16 +40,15 @@ public class ControlService {
      * @param orchestratorID The unique ID of orchestrator.
      * @param className The className of the class which implements {@link FunctionalActor}.
      */
-    public void runNewTask(Byte orchestratorID, String className, MailBoxer mailBoxer) {
+    public void runNewTask(Byte orchestratorID, String className, String messagePayload) {
         try {
             // Load Class
             // TODO: Handling exception better.
             // TODO: reuse the existed orchestrator.
             Orchestrator orc = new Orchestrator(orchestratorID, RuntimeClassLoader.loadClass(className));
             // Generate a new task event
-            TaskEvent task = TaskFactory.createTaskEvent(orc, mailBoxer);
+            TaskEvent task = TaskFactory.createTaskEvent(orc, messagePayload);
             taskController.requestToFireTask(task);
-
         } catch (Exception e) {
             logger.error("Orchestration instantiation failed");
             logger.error(e.getMessage());
