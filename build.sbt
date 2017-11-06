@@ -72,9 +72,22 @@ lazy val orcarApiServer = Project("orcar-apiserver", file("orcar-apiserver"))
     commonSettings,
     name := "orcar-apiserver",
     description := "API server in cloudlets, master controller to handle the incoming api requests",
-    libraryDependencies ++= Seq(
-      "com.github.scopt" %% "scopt" % "3.7.0"
-    ),
     mainClass in (Compile, run) := Some("org.dsngroup.orcar.apiserver.APIServer")
   )
 
+lazy val orcarGateway = Project("orcar-gateway", file("orcar-gateway"))
+  .settings(
+    commonSettings,
+    name := "orcar-gateway",
+    description := "South bridge gateway proxy."
+  )
+
+lazy val orcarCLI = Project("orcar-cli", file("orcar-cli"))
+  .settings(
+    commonSettings,
+    name := "orcar-cli",
+    description := "Command line tools which interops with API server",
+    libraryDependencies ++= Seq(
+      "com.github.scopt" %% "scopt" % "3.7.0"
+    )
+  )
