@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.runtime;
+package org.dsngroup.orcar.runtime.test;
 
-import org.junit.jupiter.api.Test;
+import org.dsngroup.orcar.runtime.RuntimeService;
+import org.dsngroup.orcar.runtime.RuntimeServiceContext;
+import org.junit.Test;
 
 public class RuntimeServiceTest {
 

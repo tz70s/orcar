@@ -18,6 +18,7 @@ package org.dsngroup.orcar.runtime;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.MailBoxer;
+import org.dsngroup.orcar.runtime.task.TaskEvent;
 
 public class Orchestrator implements Comparable<Orchestrator> {
     private Byte orchestratorID;
@@ -32,6 +33,11 @@ public class Orchestrator implements Comparable<Orchestrator> {
         return orchestratorID;
     }
 
+    /**
+     * Propagate to run in {@link TaskEvent}
+     * @param mailBoxer {@link MailBoxer}
+     * @throws Exception throws out functional actor's exception
+     */
     public void accept(MailBoxer mailBoxer) throws Exception {
         orchestratorFunciton.accept(mailBoxer);
     }
@@ -43,6 +49,14 @@ public class Orchestrator implements Comparable<Orchestrator> {
     public Orchestrator(Byte orchestratorID, Object orchestratorFunctions) throws Exception {
         this.orchestratorID = orchestratorID;
         this.orchestratorFunciton = (FunctionalActor) orchestratorFunctions;
+    }
+
+    /**
+     * Get the internal functional actor, only for test.
+     * @return {@link FunctionalActor}
+     */
+    public FunctionalActor getOrchestratorFunciton() {
+        return orchestratorFunciton;
     }
 
     /**

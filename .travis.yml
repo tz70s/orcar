@@ -1,0 +1,4 @@
+language: scala
+scala:
+  - 2.12.4
+# Use default travis sbt script is enough

@@ -17,7 +17,6 @@
 package org.dsngroup.orcar.runtime;
 
 import org.dsngroup.orcar.runtime.task.TaskEvent;
-import org.dsngroup.orcar.runtime.task.TaskState;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

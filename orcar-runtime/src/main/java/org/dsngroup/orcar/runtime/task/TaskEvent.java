@@ -38,7 +38,7 @@ public class TaskEvent implements Runnable {
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
-    TaskEvent(Orchestrator orchestrator, String messagePayload) throws Exception {
+    public TaskEvent(Orchestrator orchestrator, String messagePayload) throws Exception {
         this.taskState = TaskState.PENDING;
         this.orchestrator = orchestrator;
         this.messagePayload = messagePayload;
@@ -49,6 +49,8 @@ public class TaskEvent implements Runnable {
      */
     @Override
     public void run() {
+        // TODO: The taskstate may not be accessed for.
+        // TODO: Consider solution, replicate to another or change the locking way.
         synchronized (this) {
             while (taskState == TaskState.RUNNING) {
                 try {
@@ -87,6 +89,14 @@ public class TaskEvent implements Runnable {
      */
     public void updateMessagePayload(String messagePayload) {
         this.messagePayload = messagePayload;
+    }
+
+    /**
+     * Get the current message payload.
+     * @return {@link org.dsngroup.orcar.runtime.message.MessagePayload}
+     */
+    public String getMessagePayload() {
+        return messagePayload;
     }
 
     /**

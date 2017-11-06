@@ -51,9 +51,10 @@ lazy val orcarRuntime = Project("orcar-runtime", file("orcar-runtime"))
     libraryDependencies ++= Seq(
       "org.slf4j" % "slf4j-api" % "1.7.25",
       "org.slf4j" % "slf4j-jdk14" % "1.7.25",
-      "org.junit.jupiter" % "junit-jupiter-api" % "5.0.1" % Test
+      "com.novocode" % "junit-interface" % "0.11" % Test
     ),
-    mainClass in (Compile, run) := Some("org.dsngroup.orcar.runtime.RuntimeService")
+    mainClass in (Compile, run) := Some("org.dsngroup.orcar.runtime.RuntimeService"),
+    testOptions += Tests.Argument(TestFrameworks.JUnit)
   )
 
 lazy val orcarSample = Project("orcar-sample", file("orcar-sample"))

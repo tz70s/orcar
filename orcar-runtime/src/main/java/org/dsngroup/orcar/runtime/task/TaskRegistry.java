@@ -72,6 +72,25 @@ public class TaskRegistry {
         return registryMemoryPool.get(orchestratorID);
     }
 
+    /**
+     * Remove existed task event
+     * @param orchestratorID {@link org.dsngroup.orcar.runtime.Orchestrator}
+     * @throws Exception TODO: Need to properly deal with this
+     */
+    public static void removeTaskEvent(Byte orchestratorID) throws Exception {
+        if (!containTaskEvent(orchestratorID)) {
+            throw new Exception("Remove an non-existed task event.");
+        }
+        registryMemoryPool.remove(orchestratorID);
+    }
+
+    /**
+     * Clean all task registry.
+     */
+    public static void clearTaskRegistry() {
+        registryMemoryPool.clear();
+    }
+
     // Singleton
     private TaskRegistry(){}
 }
