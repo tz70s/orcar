@@ -41,6 +41,8 @@ public class Router {
 
     private static final Logger logger = LoggerFactory.getLogger(Router.class);
 
+    private Thread reactorThread;
+
     /**
      * Constructor of router, may be modified into accept a single context.
      * @param nodeID
@@ -57,7 +59,7 @@ public class Router {
         routingReactor = new RoutingReactor(InetAddress.getByName(listenAddress), listenPort, internalSwitch,
                 routingScheduler);
         logger.info("Proxy agent is running at " + listenAddress + ":" + listenPort);
-        Thread reactorThread = new Thread(routingReactor);
+        reactorThread = new Thread(routingReactor);
         reactorThread.start();
     }
 
@@ -69,5 +71,10 @@ public class Router {
     public void externalForward(Message message) throws Exception {
         ExternalForwarder externalForwarder = new ExternalForwarder(message);
         routingScheduler.fireForwarder(externalForwarder);
+    }
+
+    public void close() throws Exception {
+        // Interrupt it to close out.
+        reactorThread.interrupt();
     }
 }

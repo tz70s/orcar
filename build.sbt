@@ -50,7 +50,8 @@ lazy val orcarRuntime = Project("orcar-runtime", file("orcar-runtime"))
     description := "The low-level runtime for device.",
     libraryDependencies ++= Seq(
       "org.slf4j" % "slf4j-api" % "1.7.25",
-      "org.slf4j" % "slf4j-jdk14" % "1.7.25"
+      "org.slf4j" % "slf4j-jdk14" % "1.7.25",
+      "org.junit.jupiter" % "junit-jupiter-api" % "5.0.1" % Test
     ),
     mainClass in (Compile, run) := Some("org.dsngroup.orcar.runtime.RuntimeService")
   )

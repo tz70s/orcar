@@ -108,8 +108,25 @@ public class RoutingReactor implements Runnable {
                         routingScheduler.fireForwarder(new InternalForwarder(forwardSocketChannel, internalSwitch));
                     }
                 }
+            } catch (InterruptedException ie) {
+                logger.debug("Interrupted outside." + ie.getMessage());
+                // Safely exit
+                try {
+                    serverSelector.close();
+                } catch (IOException io) {
+                    logger.error("Can't close server selector" + io.getMessage());
+                }
+
+                try {
+                    serverSocketChannel.close();
+                } catch (IOException io) {
+                    logger.error("Can't close server socket channel" + io.getMessage());
+                }
+
+                return;
             } catch (Exception e) {
                 logger.error("Selector error! " + e.getMessage());
+                return;
             }
         }
     }

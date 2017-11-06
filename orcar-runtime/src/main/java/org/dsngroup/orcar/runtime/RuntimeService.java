@@ -84,6 +84,14 @@ public class RuntimeService {
         return runtimeServiceContext;
     }
 
+    /**
+     * Close down the runtime service.
+     * @throws Exception Propagate from {@link Router}
+     */
+    public void close() throws Exception {
+        router.close();
+    }
+
     public static void main(String[] args) {
         RuntimeService srv = new RuntimeService(new RuntimeServiceContext()).serve();
     }
