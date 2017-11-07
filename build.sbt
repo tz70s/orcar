@@ -74,6 +74,11 @@ lazy val orcarApiServer = Project("orcar-apiserver", file("orcar-apiserver"))
     commonSettings,
     name := "orcar-apiserver",
     description := "API server in cloudlets, master controller to handle the incoming api requests",
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-http" % "10.0.10",
+      "com.typesafe.akka" %% "akka-stream" % "2.5.4",
+      "com.typesafe.akka" %% "akka-actor"  % "2.5.4"
+    ),
     mainClass in (Compile, run) := Some("org.dsngroup.orcar.apiserver.APIServer")
   )
 

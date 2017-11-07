@@ -16,8 +16,6 @@
 
 package org.dsngroup.orcar.apiserver
 
-
 object APIServer extends App {
-  RemoteUtils.pingDevice("140.112.42.89")
-  println("Entry!")
+  ControlRouter.start("0.0.0.0", 8282)
 }
