@@ -57,6 +57,22 @@ lazy val orcarRuntime = Project("orcar-runtime", file("orcar-runtime"))
     testOptions += Tests.Argument(TestFrameworks.JUnit)
   )
 
+lazy val orcarPerf = Project("orcar-perf", file("orcar-perf"))
+  .dependsOn(
+    orcarActor,
+    orcarRuntime,
+    orcarGpio
+  )
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      "org.slf4j" % "slf4j-api" % "1.7.25",
+      "org.slf4j" % "slf4j-jdk14" % "1.7.25"
+    ),
+    name := "orcar-perf",
+    description := "Runtime performance test and logging."
+  )
+
 lazy val orcarSample = Project("orcar-sample", file("orcar-sample"))
   .dependsOn(
     orcarGpio,

@@ -50,11 +50,11 @@ public class RuntimeServiceContext {
 
     /**
      * Overloaded constructor of RuntimeServiceContext.
-     * @param userDefinedUUID the uuid of the RuntimeService.
      * @param runtimeThreadPoolSize The thread pool size of runtime.
+     * @param localClassPath Customized localClassPath.
      */
-    public RuntimeServiceContext(UUID userDefinedUUID, int runtimeThreadPoolSize, String localClassPath) {
-        this.runtimeServiceID = userDefinedUUID;
+    public RuntimeServiceContext(int runtimeThreadPoolSize, String localClassPath) {
+        this.runtimeServiceID = UUID.randomUUID();
         this.runtimeThreadPoolSize = runtimeThreadPoolSize;
         try {
             this.localClassPath = new File(localClassPath).toURI().toURL();

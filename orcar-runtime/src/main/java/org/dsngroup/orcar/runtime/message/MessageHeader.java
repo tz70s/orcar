@@ -50,6 +50,21 @@ public class MessageHeader {
 
     /**
      * Convenient utilities for construct MessageHeader.
+     * @param bytes bytes based.
+     * @throws Exception if length not enough.
+     */
+    public MessageHeader(byte[] bytes) throws Exception {
+        if (bytes.length < 8) {
+            throw new Exception("The fix message header length must equal to 8");
+        }
+        messageType = bytes[0];
+        srcNodeID = bytes[1];
+        srcOrchestratorID = bytes[2];
+        dstNodeID = bytes[3];
+        dstOrchestratorID = bytes[4];
+    }
+    /**
+     * Convenient utilities for construct MessageHeader.
      * @param rawHeader The string based raw header.
      * @throws Exception Parsing failed.
      */

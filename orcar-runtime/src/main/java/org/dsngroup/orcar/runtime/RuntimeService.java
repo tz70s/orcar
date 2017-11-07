@@ -77,6 +77,22 @@ public class RuntimeService {
     }
 
     /**
+     * For perf test only.
+     * @return {@link ControlService}
+     */
+    public ControlService getControlService() {
+        return controlService;
+    }
+
+    /**
+     * For perf test only.
+     * @return {@link Router}
+     */
+    public Router getRouter() {
+        return router;
+    }
+
+    /**
      * Get the associated runtime service context.
      * @return {@link RuntimeServiceContext}
      */
