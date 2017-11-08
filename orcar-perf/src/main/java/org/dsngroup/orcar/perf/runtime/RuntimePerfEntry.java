@@ -32,7 +32,8 @@ public class RuntimePerfEntry {
                 "/Users/Tzuchiao/workspace/java/orcar/orcar-perf/target/scala-2.12/classes/"
         );
         RuntimeService srv = new RuntimeService(ctx).serve();
-        SequentialExecution seq = new SequentialExecution(srv).perfOnce();
+        // SequentialExecution seq = new SequentialExecution(srv).perfOnce();
+        ParallelExecution par = new ParallelExecution(srv).perfOnce();
 
     }
 }
