@@ -31,13 +31,29 @@ public class TaskController {
 
     /**
      * Request to fire a task.
-     * @param task {@link TaskEvent}
+     * @param orchestratorID {@link Orchestrator}
      * @throws Exception The exception is thrown as an error from request failed, it should be catch.
      */
-    public void requestToFireTask(TaskEvent task) throws Exception {
+    public void requestToFireTask(byte orchestratorID) throws Exception {
         // TODO: Should create a listener to check the task state?
-        runtimeScheduler.fireTask(task);
-        TaskRegistry.registerTaskEvent(task);
+        TaskEvent taskEvent = TaskRegistry.getTaskEvent(orchestratorID);
+        // In this step, the task event is already store in the task registry and ready to execute,
+        //    or, is current running.
+        synchronized (taskEvent) {
+            // 1. Checkout the task event is running or not.
+            if (taskEvent.getTaskState() == TaskState.RUNNING) {
+                // Running currently
+                // Ignore this request
+            } else {
+                // The task event is not currently running
+                // Checkout whether it has pending task event
+                if (TaskRegistry.checkWhetherPendingTaskEvent(taskEvent)) {
+                    // scheduled it
+                    taskEvent.setTaskState(TaskState.RUNNING);
+                    runtimeScheduler.fireTask(taskEvent);
+                }
+            }
+        }
     }
 
     /**

@@ -19,6 +19,7 @@ package org.dsngroup.orcar.perf.runtime;
 import org.dsngroup.orcar.runtime.ControlService;
 import org.dsngroup.orcar.runtime.RuntimeService;
 import org.dsngroup.orcar.runtime.routing.Router;
+import org.dsngroup.orcar.runtime.task.TaskRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +41,13 @@ public class SequentialExecution {
         // Start running
         // TODO: Can't get the finishing time, currently.
         // TODO: Figure out completable future to track this.
-        for (int i = 0; i < 10; i++)
-            controlServiceBinding.runNewTask((byte) '1',
-                "org.dsngroup.orcar.perf.runtime.actors.CountingActor","hello");
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 5; j++) {
+                controlServiceBinding.runNewTask((byte) i,
+                        "org.dsngroup.orcar.perf.runtime.actors.CountingActor", "Actor-" + new Integer(i).toString());
+            }
+            // In this example, the blocking in the internal thread, will cause starvation.
+        }
         return this;
     }
 }

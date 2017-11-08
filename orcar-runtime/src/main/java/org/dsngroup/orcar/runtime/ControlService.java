@@ -41,13 +41,14 @@ public class ControlService {
      */
     public void runNewTask(Byte orchestratorID, String className, String messagePayload) {
         try {
-            // Load Class
-            // TODO: Handling exception better.
-            // TODO: reuse the existed orchestrator.
-            Orchestrator orc = new Orchestrator(orchestratorID, RuntimeClassLoader.loadClass(className));
-            // Generate a new task event
-            TaskEvent task = TaskFactory.createTaskEvent(orc, messagePayload);
-            taskController.requestToFireTask(task);
+            // TODO: May be a problem, since Byte will not be actually equivalent object.
+            synchronized (orchestratorID) {
+                // Load Class
+                // Generate a new task event
+                TaskFactory.createTaskEvent(orchestratorID, className, messagePayload, taskController);
+                // The task controller will figure out whether.
+                taskController.requestToFireTask(orchestratorID);
+            }
         } catch (Exception e) {
             logger.error("Orchestration instantiation failed");
             logger.error(e.getMessage());

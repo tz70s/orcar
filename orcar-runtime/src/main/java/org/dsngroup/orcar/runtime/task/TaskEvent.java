@@ -26,22 +26,22 @@ import org.slf4j.LoggerFactory;
  */
 public class TaskEvent implements Runnable {
 
-    private TaskState taskState;
+    private volatile TaskState taskState;
 
-    private Orchestrator orchestrator;
+    private volatile Orchestrator orchestrator;
 
     private static final Logger logger = LoggerFactory.getLogger(TaskEvent.class);
 
-    private String messagePayload;
+    private static TaskController taskController;
 
     /**
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
-    public TaskEvent(Orchestrator orchestrator, String messagePayload) throws Exception {
+    public TaskEvent(Orchestrator orchestrator, TaskController taskController) throws Exception {
         this.taskState = TaskState.PENDING;
         this.orchestrator = orchestrator;
-        this.messagePayload = messagePayload;
+        TaskEvent.taskController = taskController;
     }
 
     /**
@@ -49,29 +49,18 @@ public class TaskEvent implements Runnable {
      */
     @Override
     public void run() {
-        // TODO: The taskstate may not be accessed for.
-        // TODO: Consider solution, replicate to another or change the locking way.
-        synchronized (this) {
-            while (taskState == TaskState.RUNNING) {
-                try {
-                    // TODO: Seems like no need to wait and notify.
-                    wait();
-                } catch (InterruptedException e) {
-                    logger.error("Interrupted. " + e.getMessage());
-                }
-            }
-            // Set to running state
-            taskState = TaskState.RUNNING;
-            try {
-                MailBoxer mailBoxer = new MailBoxer(messagePayload);
-                orchestrator.accept(mailBoxer);
-                taskState = TaskState.FINISHED;
-            } catch (Exception e) {
-                logger.error("Internal error of functional actor" + e.getMessage());
-                taskState = TaskState.FAILED;
-            } finally {
-                notify();
-            }
+        try {
+            MailBoxer mailBoxer = new MailBoxer(TaskRegistry.pollRegisteredTaskEventMessage(this));
+            orchestrator.accept(mailBoxer);
+            taskState = TaskState.FINISHED;
+            // TODO: Currently fire another task inner, but we should have mechanism to use task controller outside.
+            // TODO: This will also have consistency problem?
+            // TODO: That is, we still have to use completable future for trigger next task?
+            taskController.requestToFireTask(orchestrator.getOrchestratorID());
+        } catch (Exception e) {
+            logger.error("Internal error of functional actor" + e.getMessage());
+            taskState = TaskState.FAILED;
+            // TODO: Execute fail state task.
         }
     }
 
@@ -79,31 +68,18 @@ public class TaskEvent implements Runnable {
      * Get the current taskState of the task.
      * @return {@link TaskState}
      */
-    public TaskState getTaskState() {
+    public synchronized TaskState getTaskState() {
         return taskState;
     }
 
-    /**
-     * Update message for the new existed task event.
-     * @param messagePayload {@link org.dsngroup.orcar.runtime.message.MessagePayload}
-     */
-    public void updateMessagePayload(String messagePayload) {
-        this.messagePayload = messagePayload;
+    public synchronized void setTaskState(TaskState taskState) {
+        this.taskState = taskState;
     }
-
-    /**
-     * Get the current message payload.
-     * @return {@link org.dsngroup.orcar.runtime.message.MessagePayload}
-     */
-    public String getMessagePayload() {
-        return messagePayload;
-    }
-
     /**
      * Get the wrapped orchestrator.
      * @return {@link Orchestrator}
      */
-    public Orchestrator getOrchestrator() {
+    public synchronized Orchestrator getOrchestrator() {
         return orchestrator;
     }
 }

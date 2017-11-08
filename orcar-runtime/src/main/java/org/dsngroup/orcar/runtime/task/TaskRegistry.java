@@ -18,6 +18,7 @@ package org.dsngroup.orcar.runtime.task;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * The TaskRegistry is a handler for record, arrange tasks.
@@ -26,14 +27,48 @@ public class TaskRegistry {
 
     // TODO: What is a proper TaskRegistry data structure?
 
-    private static Map<Byte, TaskEvent> registryMemoryPool = new ConcurrentHashMap<>();
+    public static Map<Byte, TaskEvent> taskEventMemoryPool = new ConcurrentHashMap<>();
+
+    public static Map<TaskEvent, LinkedBlockingQueue<String>> taskRegistryMemoryPool = new ConcurrentHashMap<>();
 
     /**
-     * Register a task event into TaskRegistry.
-     * @param task {@link TaskEvent}
+     * Register a new task event into TaskRegistry.
+     * @param taskEvent {@link TaskEvent}
+     * @param messagePayload message payload associated
      */
-    public static void registerTaskEvent(TaskEvent task) {
-        registryMemoryPool.put(task.getOrchestrator().getOrchestratorID(), task);
+    public static synchronized void registerNewTaskEvent(TaskEvent taskEvent, String messagePayload) throws Exception {
+        taskEventMemoryPool.put(taskEvent.getOrchestrator().getOrchestratorID(), taskEvent);
+        taskRegistryMemoryPool.put(taskEvent, new LinkedBlockingQueue<>());
+        taskRegistryMemoryPool.get(taskEvent).put(messagePayload);
+    }
+
+    /**
+     * Register a existed task event into taskregistry.
+     * @param taskEvent {@link TaskEvent}
+     * @param messagePayload message payload associated
+     * @throws Exception
+     */
+    public static void registerExistedTaskEvent(TaskEvent taskEvent, String messagePayload) throws Exception {
+        taskRegistryMemoryPool.get(taskEvent).put(messagePayload);
+    }
+
+    /**
+     * Check whether there is pending task event or not
+     * @param taskEvent {@link TaskEvent}
+     * @return true or false
+     * @throws Exception
+     */
+    public static boolean checkWhetherPendingTaskEvent(TaskEvent taskEvent) throws Exception {
+        return taskRegistryMemoryPool.get(taskEvent).size() != 0;
+    }
+    /**
+     * Poll a registered task event message to do a new task.
+     * @param taskEvent {@link TaskEvent}
+     * @return message payload
+     * @throws Exception
+     */
+    public static String pollRegisteredTaskEventMessage(TaskEvent taskEvent) throws Exception {
+        return taskRegistryMemoryPool.get(taskEvent).poll();
     }
 
     /**
@@ -42,8 +77,7 @@ public class TaskRegistry {
      * @return {@link TaskState}
      */
     public static synchronized TaskState getTaskEventState(Byte orchestratorID) throws Exception {
-        // TODO: may need a better lock.
-        TaskEvent tmpBindingTaskEvent = registryMemoryPool.get(orchestratorID);
+        TaskEvent tmpBindingTaskEvent = taskEventMemoryPool.get(orchestratorID);
         if (tmpBindingTaskEvent == null) {
             throw new Exception("No such task event.");
         }
@@ -56,7 +90,7 @@ public class TaskRegistry {
      * @return contains or not
      */
     public static boolean containTaskEvent(Byte orchestratorID) {
-        return registryMemoryPool.containsKey(orchestratorID);
+        return taskEventMemoryPool.containsKey(orchestratorID);
     }
 
     /**
@@ -69,7 +103,7 @@ public class TaskRegistry {
         if (!containTaskEvent(orchestratorID)) {
             throw new Exception("Should checkout the task event existed or not.");
         }
-        return registryMemoryPool.get(orchestratorID);
+        return taskEventMemoryPool.get(orchestratorID);
     }
 
     /**
@@ -81,14 +115,35 @@ public class TaskRegistry {
         if (!containTaskEvent(orchestratorID)) {
             throw new Exception("Remove an non-existed task event.");
         }
-        registryMemoryPool.remove(orchestratorID);
+        TaskEvent taskEvent = getTaskEvent(orchestratorID);
+        if (taskRegistryMemoryPool.get(taskEvent).size() != 0) {
+            throw new Exception("Still have works to do in this actor");
+        } else {
+            taskEventMemoryPool.remove(orchestratorID);
+            taskRegistryMemoryPool.remove(orchestratorID);
+        }
     }
 
     /**
-     * Clean all task registry.
+     * Force remove a task event with associated messages.
+     * @param orchestratorID {@link org.dsngroup.orcar.runtime.Orchestrator}
+     * @throws Exception if no such task event.
      */
-    public static void clearTaskRegistry() {
-        registryMemoryPool.clear();
+    public static void forceRemoveTaskEvent(Byte orchestratorID) throws Exception {
+         if (!containTaskEvent(orchestratorID)) {
+            throw new Exception("Remove an non-existed task event.");
+         }
+         TaskEvent taskEvent = getTaskEvent(orchestratorID);
+         taskEventMemoryPool.remove(orchestratorID);
+         taskRegistryMemoryPool.remove(orchestratorID);
+    }
+
+    /**
+     * Force clean all task registry.
+     */
+    public static void forceClearTaskRegistry() {
+        taskRegistryMemoryPool.clear();
+        taskEventMemoryPool.clear();
     }
 
     // Singleton

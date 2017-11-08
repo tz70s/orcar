@@ -17,6 +17,7 @@
 package org.dsngroup.orcar.runtime.task;
 
 import org.dsngroup.orcar.runtime.Orchestrator;
+import org.dsngroup.orcar.runtime.RuntimeClassLoader;
 
 /**
  * Mostly to avoid identifier, the task should use the factory pattern for create {@link TaskEvent}
@@ -25,21 +26,25 @@ public class TaskFactory {
 
     /**
      * Create a task event
-     * @param orchestrator {@link Orchestrator}
+     * @param orchestratorID {@link Orchestrator}
      * @param messagePayload {@link org.dsngroup.orcar.runtime.message.MessagePayload}
-     * @return {@link TaskEvent}
      * @throws Exception Need to be actually catch if the repeat orchestrator id.
      */
-    public static TaskEvent createTaskEvent(Orchestrator orchestrator, String messagePayload) throws Exception {
-        TaskEvent newTaskEvent;
-        // Checkout if the task event existed.
-        if (TaskRegistry.containTaskEvent(orchestrator.getOrchestratorID())) {
-            newTaskEvent = TaskRegistry.getTaskEvent(orchestrator.getOrchestratorID());
-            newTaskEvent.updateMessagePayload(messagePayload);
-        } else {
-            newTaskEvent = new TaskEvent(orchestrator, messagePayload);
+    public static void createTaskEvent(Byte orchestratorID, String className, String messagePayload, TaskController taskController)
+            throws Exception {
+        // TODO: Also, the same problem in control service.
+        synchronized (orchestratorID) {
+            // Checkout if the task event existed.
+            if (TaskRegistry.containTaskEvent(orchestratorID)) {
+                TaskRegistry.registerExistedTaskEvent(
+                        TaskRegistry.getTaskEvent(orchestratorID),
+                        messagePayload);
+            } else {
+                Orchestrator orchestrator = new Orchestrator(orchestratorID, RuntimeClassLoader.loadClass(className));
+                TaskEvent taskEvent = new TaskEvent(orchestrator, taskController);
+                TaskRegistry.registerNewTaskEvent(taskEvent, messagePayload);
+            }
         }
-        return newTaskEvent;
     }
 
     private TaskFactory() {}

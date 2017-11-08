@@ -18,10 +18,7 @@ package org.dsngroup.orcar.runtime;
 
 import org.dsngroup.orcar.runtime.task.TaskEvent;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * The RuntimeScheduler class schedule the task registered in TaskRegistry.
@@ -30,7 +27,9 @@ public class RuntimeScheduler {
 
     private int runtimeThreadPoolSize;
 
-    private ScheduledExecutorService service;
+    private ExecutorService service;
+
+    private ExecutorCompletionService serviceComplete;
 
     /**
      * configScheduler is responsive for config a RuntimeSchedulerThreadPool
@@ -52,9 +51,9 @@ public class RuntimeScheduler {
      * @param task Desired scheduled task.
      * @throws Exception Throws if the scheduler is not initialized.
      */
-    public synchronized ScheduledFuture<?> fireTask(TaskEvent task) throws Exception {
+    public synchronized Future<?> fireTask(TaskEvent task) throws Exception {
         // TODO: Add a listener to accept this Scheduler Future for task finishing.
-        return service.schedule(task, 0, TimeUnit.MILLISECONDS);
+        return service.submit(task);
     }
 
     /**

@@ -26,10 +26,9 @@ public class CountingActor implements FunctionalActor {
      */
     @Override
     public void accept(MailBoxer mailBoxer) throws Exception {
-        int count = 0;
-        while (count < 20) {
+        while (true) {
             Thread.sleep(1000);
-            count++;
+            System.out.println(mailBoxer.toString());
         }
     }
 }
