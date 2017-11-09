@@ -39,6 +39,7 @@ public class RuntimeServiceContext {
      * Default constructor of RuntimeServiceContext
      */
     public RuntimeServiceContext() {
+        // TODO: The node id should be configure by remote.
         this.nodeID = (byte) '0';
         this.runtimeThreadPoolSize = 4;
         try {

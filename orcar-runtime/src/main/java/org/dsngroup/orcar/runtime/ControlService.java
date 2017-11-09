@@ -18,6 +18,8 @@ package org.dsngroup.orcar.runtime;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.runtime.task.TaskController;
+import org.dsngroup.orcar.runtime.task.TaskEventID;
+import org.dsngroup.orcar.runtime.task.TaskEventIDFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +37,9 @@ public class ControlService {
      * @param orchestratorID The unique ID of orchestrator.
      * @param className The className of the class which implements {@link FunctionalActor}.
      */
-    public void runNewTask(Byte orchestratorID, String className, String messagePayload) {
+    public void runNewTask(byte orchestratorID, String className, String messagePayload) {
         try {
-            taskController.createTaskEvent(orchestratorID, className, messagePayload);
+            taskController.createTaskEvent(TaskEventIDFactory.createTaskEventID(orchestratorID), className, messagePayload);
         } catch (Exception e) {
             logger.error("Error occured in task controller " + e.getMessage());
             // Drop this request.

@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TaskEvent implements Runnable {
 
-    private final byte taskEventID;
+    private final TaskEventID taskEventID;
 
     private volatile TaskState taskState;
 
@@ -40,8 +40,8 @@ public class TaskEvent implements Runnable {
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
-    public TaskEvent(Orchestrator orchestrator, TaskController taskController) throws Exception {
-        this.taskEventID = orchestrator.getOrchestratorID();
+    public TaskEvent(TaskEventID taskEventID, Orchestrator orchestrator, TaskController taskController) throws Exception {
+        this.taskEventID = taskEventID;
         this.taskState = TaskState.PENDING;
         this.orchestrator = orchestrator;
         TaskEvent.taskController = taskController;
@@ -60,7 +60,7 @@ public class TaskEvent implements Runnable {
             // TODO: Currently fire another task inner, but we should have mechanism to use task controller outside.
             // TODO: This will also have consistency problem?
             // TODO: That is, we still have to use completable future for trigger next task?
-            taskController.requestToFireTask(orchestrator.getOrchestratorID());
+            taskController.requestToFireTask(taskEventID);
         } catch (Exception e) {
             logger.error("Internal error of functional actor" + e.getMessage());
             taskState = TaskState.FAILED;
@@ -72,7 +72,7 @@ public class TaskEvent implements Runnable {
      * Get the task event id which is equivalent to the orchestrator id.
      * @return task event id
      */
-    public byte getTaskEventID() {
+    public TaskEventID getTaskEventID() {
         return taskEventID;
     }
 

@@ -41,36 +41,36 @@ public class TaskController {
 
     /**
      * Create a task event
-     * @param orchestratorID {@link Orchestrator}
+     * @param taskEventID {@link Orchestrator}
      * @param messagePayload {@link org.dsngroup.orcar.runtime.message.MessagePayload}
      * @throws Exception Need to be actually catch if the repeat orchestrator id.
      */
-    public void createTaskEvent(Byte orchestratorID, String className, String messagePayload)
+    public void createTaskEvent(TaskEventID taskEventID, String className, String messagePayload)
             throws Exception {
-        // TODO: Synchronized on a Byte is not a safe way.
-        synchronized (orchestratorID) {
+        synchronized (taskEventID) {
             // Checkout if the task event existed.
-            if (taskRegistry.containTaskEvent(orchestratorID)) {
+            if (taskRegistry.containTaskEvent(taskEventID)) {
                 taskRegistry.registerExistedTaskEvent(
-                        orchestratorID,
+                        taskEventID,
                         messagePayload);
             } else {
-                Orchestrator orchestrator = new Orchestrator(orchestratorID, runtimeClassLoader.loadClass(className));
-                TaskEvent taskEvent = new TaskEvent(orchestrator, this);
+                Orchestrator orchestrator = new Orchestrator(taskEventID.getPrimitiveTaskEventID(),
+                        runtimeClassLoader.loadClass(className));
+                TaskEvent taskEvent = new TaskEvent(taskEventID, orchestrator, this);
                 taskRegistry.registerNewTaskEvent(taskEvent, messagePayload);
             }
         }
-        requestToFireTask(orchestratorID);
+        requestToFireTask(taskEventID);
     }
 
     /**
      * Request to fire a task.
-     * @param orchestratorID {@link Orchestrator}
+     * @param taskEventID {@link TaskEventID}
      * @throws Exception The exception is thrown as an error from request failed, it should be catch.
      */
-    public void requestToFireTask(byte orchestratorID) throws Exception {
+    public void requestToFireTask(TaskEventID taskEventID) throws Exception {
         // TODO: Should create a listener to check the task state?
-        TaskEvent taskEvent = taskRegistry.getTaskEvent(orchestratorID);
+        TaskEvent taskEvent = taskRegistry.getTaskEvent(taskEventID);
         // In this step, the task event is already store in the task registry and ready to execute,
         //    or, is current running.
         synchronized (taskEvent) {
@@ -81,7 +81,7 @@ public class TaskController {
             } else {
                 // The task event is not currently running
                 // Checkout whether it has pending task event
-                if (taskRegistry.checkWhetherPendingTaskEvent(orchestratorID)) {
+                if (taskRegistry.checkWhetherPendingTaskEvent(taskEventID)) {
                     // scheduled it
                     taskEvent.setTaskState(TaskState.RUNNING);
                     runtimeScheduler.fireTask(taskEvent);

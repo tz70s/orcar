@@ -47,7 +47,6 @@ public class RuntimeClassLoader {
      * @throws ClassNotFoundException Must be catch.
      */
     public Object loadClass(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        // TODO: Checkout if default loader initialized?
         return defaultLoader.loadClass(className).newInstance();
     }
 

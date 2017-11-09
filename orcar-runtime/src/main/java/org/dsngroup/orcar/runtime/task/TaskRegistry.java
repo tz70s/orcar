@@ -25,7 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class TaskRegistry {
 
-    private static Map<Byte, TaskRecordFrame> taskRegistryMemoryPool;
+    private static Map<TaskEventID, TaskRecordFrame> taskRegistryMemoryPool;
 
     /**
      * Data structure for storing a task event and associated message queue.
@@ -79,7 +79,7 @@ public class TaskRegistry {
      * @param messagePayload message payload associated
      * @throws Exception
      */
-    public void registerExistedTaskEvent(byte taskEventID, String messagePayload) throws Exception {
+    public void registerExistedTaskEvent(TaskEventID taskEventID, String messagePayload) throws Exception {
         taskRegistryMemoryPool.get(taskEventID).putEventWaitingQueue(messagePayload);
     }
 
@@ -89,7 +89,7 @@ public class TaskRegistry {
      * @return true or false
      * @throws Exception
      */
-    public boolean checkWhetherPendingTaskEvent(byte taskEventID) throws Exception {
+    public boolean checkWhetherPendingTaskEvent(TaskEventID taskEventID) throws Exception {
         return taskRegistryMemoryPool.get(taskEventID).checkWhetherPendingEvent();
     }
 
@@ -99,7 +99,7 @@ public class TaskRegistry {
      * @return message payload
      * @throws Exception
      */
-    public String pollRegisteredTaskEventMessage(byte taskEventID) throws Exception {
+    public String pollRegisteredTaskEventMessage(TaskEventID taskEventID) throws Exception {
         return taskRegistryMemoryPool.get(taskEventID).pollEventWaitingQueue();
     }
 
@@ -108,7 +108,7 @@ public class TaskRegistry {
      * @param taskEventID {@link TaskEvent}
      * @return {@link TaskState}
      */
-    public synchronized TaskState getTaskEventState(Byte taskEventID) throws Exception {
+    public synchronized TaskState getTaskEventState(TaskEventID taskEventID) throws Exception {
         TaskEvent taskEvent = taskRegistryMemoryPool.get(taskEventID).getTaskEvent();
         if (taskEvent == null) {
             throw new Exception("No such task event.");
@@ -121,7 +121,7 @@ public class TaskRegistry {
      * @param taskEventID {@link TaskEvent}
      * @return contains or not
      */
-    public boolean containTaskEvent(byte taskEventID) {
+    public boolean containTaskEvent(TaskEventID taskEventID) {
         return taskRegistryMemoryPool.containsKey(taskEventID);
     }
 
@@ -131,7 +131,7 @@ public class TaskRegistry {
      * @return {@link TaskEvent}
      * @throws Exception checkout if the task existed or not.
      */
-    public TaskEvent getTaskEvent(byte taskEventID) throws Exception {
+    public TaskEvent getTaskEvent(TaskEventID taskEventID) throws Exception {
         if (!containTaskEvent(taskEventID)) {
             throw new Exception("Should checkout the task event existed or not.");
         }
@@ -143,7 +143,7 @@ public class TaskRegistry {
      * @param taskEventID {@link TaskEvent}
      * @throws Exception TODO: Need to properly deal with this
      */
-    public void removeTaskEvent(byte taskEventID) throws Exception {
+    public void removeTaskEvent(TaskEventID taskEventID) throws Exception {
         if (!containTaskEvent(taskEventID)) {
             throw new Exception("Remove an non-existed task event.");
         }
@@ -160,7 +160,7 @@ public class TaskRegistry {
      * @param taskEventID {@link TaskEvent}
      * @throws Exception if no such task event.
      */
-    public void forceRemoveTaskEvent(byte taskEventID) throws Exception {
+    public void forceRemoveTaskEvent(TaskEventID taskEventID) throws Exception {
          if (!containTaskEvent(taskEventID)) {
             throw new Exception("Remove an non-existed task event.");
          }
