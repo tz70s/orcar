@@ -32,6 +32,7 @@ public class TaskFactoryTest {
 
     private static TaskController taskController;
 
+    /*
     private void init() throws Exception {
         taskController = new TaskController(new RuntimeScheduler());
         functionalActor = new FunctionalActor() {
@@ -41,6 +42,7 @@ public class TaskFactoryTest {
             }
         };
     }
+    */
 
     @Test
     public void createTaskEventTest() throws Exception {

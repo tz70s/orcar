@@ -33,10 +33,10 @@ public class RuntimeClassLoader {
     private static final Logger logger = LoggerFactory.getLogger(RuntimeClassLoader.class);
 
     /**
-     * (Must) Initialized this singleton class loader.
+     * Initialization.
      * @param url The classpaths which initialized at RuntimeServiceContext.
      */
-    public static void init(URL url) {
+    private void init(URL url) {
         defaultLoader = new URLClassLoader(new URL[] {url});
     }
 
@@ -46,10 +46,12 @@ public class RuntimeClassLoader {
      * @return Object, to be cast.
      * @throws ClassNotFoundException Must be catch.
      */
-    public static Object loadClass(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public Object loadClass(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         // TODO: Checkout if default loader initialized?
         return defaultLoader.loadClass(className).newInstance();
     }
 
-    private RuntimeClassLoader() {}
+    public RuntimeClassLoader(URL url) {
+        init(url);
+    }
 }

@@ -17,7 +17,11 @@
 package org.dsngroup.orcar.runtime.task;
 
 import org.dsngroup.orcar.runtime.Orchestrator;
+import org.dsngroup.orcar.runtime.RuntimeClassLoader;
 import org.dsngroup.orcar.runtime.RuntimeScheduler;
+import org.dsngroup.orcar.runtime.RuntimeServiceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The TaskController will route the request task to:
@@ -29,6 +33,36 @@ public class TaskController {
 
     private RuntimeScheduler runtimeScheduler;
 
+    private final TaskRegistry taskRegistry;
+
+    private final RuntimeClassLoader runtimeClassLoader;
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+
+    /**
+     * Create a task event
+     * @param orchestratorID {@link Orchestrator}
+     * @param messagePayload {@link org.dsngroup.orcar.runtime.message.MessagePayload}
+     * @throws Exception Need to be actually catch if the repeat orchestrator id.
+     */
+    public void createTaskEvent(Byte orchestratorID, String className, String messagePayload)
+            throws Exception {
+        // TODO: Synchronized on a Byte is not a safe way.
+        synchronized (orchestratorID) {
+            // Checkout if the task event existed.
+            if (taskRegistry.containTaskEvent(orchestratorID)) {
+                taskRegistry.registerExistedTaskEvent(
+                        orchestratorID,
+                        messagePayload);
+            } else {
+                Orchestrator orchestrator = new Orchestrator(orchestratorID, runtimeClassLoader.loadClass(className));
+                TaskEvent taskEvent = new TaskEvent(orchestrator, this);
+                taskRegistry.registerNewTaskEvent(taskEvent, messagePayload);
+            }
+        }
+        requestToFireTask(orchestratorID);
+    }
+
     /**
      * Request to fire a task.
      * @param orchestratorID {@link Orchestrator}
@@ -36,7 +70,7 @@ public class TaskController {
      */
     public void requestToFireTask(byte orchestratorID) throws Exception {
         // TODO: Should create a listener to check the task state?
-        TaskEvent taskEvent = TaskRegistry.getTaskEvent(orchestratorID);
+        TaskEvent taskEvent = taskRegistry.getTaskEvent(orchestratorID);
         // In this step, the task event is already store in the task registry and ready to execute,
         //    or, is current running.
         synchronized (taskEvent) {
@@ -47,7 +81,7 @@ public class TaskController {
             } else {
                 // The task event is not currently running
                 // Checkout whether it has pending task event
-                if (TaskRegistry.checkWhetherPendingTaskEvent(taskEvent)) {
+                if (taskRegistry.checkWhetherPendingTaskEvent(orchestratorID)) {
                     // scheduled it
                     taskEvent.setTaskState(TaskState.RUNNING);
                     runtimeScheduler.fireTask(taskEvent);
@@ -57,21 +91,24 @@ public class TaskController {
     }
 
     /**
-     * Request a task from a ID.
-     * @param orchestratorID see {@link Orchestrator}.
-     * @return {@link TaskState}
-     * @throws Exception Throws if the error occurred on get state from registry, it should be catch.
+     * Get the associated task registry, {@link TaskRegistry}
+     * @return task registry
      */
-    public TaskState requestForTaskState(Byte orchestratorID) throws Exception {
-        // TODO: should have a unique alias for request, instead of task.
-        return TaskRegistry.getTaskEventState(orchestratorID);
+    public TaskRegistry getTaskRegistry() {
+        return taskRegistry;
     }
 
     /**
-     * Contructor, accept a runtime scheduler.
-     * @param runtimeScheduler {@see RuntimeScheduler}
+     * Contructor, accept a {@link RuntimeServiceContext}.
      */
-    public TaskController(RuntimeScheduler runtimeScheduler) {
-        this.runtimeScheduler = runtimeScheduler;
+    public TaskController(RuntimeServiceContext runtimeServiceContext) {
+        try {
+            runtimeScheduler = new RuntimeScheduler(runtimeServiceContext.getRuntimeThreadPoolSize());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            System.exit(1);
+        }
+        taskRegistry = new TaskRegistry();
+        runtimeClassLoader = new RuntimeClassLoader(runtimeServiceContext.getLocalClassPath());
     }
 }

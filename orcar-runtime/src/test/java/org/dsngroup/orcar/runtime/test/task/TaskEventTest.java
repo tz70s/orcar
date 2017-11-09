@@ -18,14 +18,7 @@ package org.dsngroup.orcar.runtime.test.task;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.MailBoxer;
-import org.dsngroup.orcar.runtime.Orchestrator;
-import org.dsngroup.orcar.runtime.task.TaskEvent;
-import org.dsngroup.orcar.runtime.task.TaskFactory;
-import org.dsngroup.orcar.runtime.task.TaskRegistry;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 

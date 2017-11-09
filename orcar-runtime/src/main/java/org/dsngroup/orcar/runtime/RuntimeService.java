@@ -45,21 +45,17 @@ public class RuntimeService {
         this.runtimeServiceContext = runtimeServiceContext;
         // Initialized RuntimeClassLoader.
 
-        // TODO: Reconsider the initialization place.
-        // Init RuntimeClassLoader
-        RuntimeClassLoader.init(runtimeServiceContext.getLocalClassPath());
-
         // TODO: Need to have a better place.
         controlService = new ControlService(runtimeServiceContext);
 
         try {
-            router = new Router((byte) '1', controlService, 4);
+            router = new Router(runtimeServiceContext.getNodeID(), controlService, 4);
         } catch (Exception e) {
             logger.error("Router settings failed. " + e.getMessage());
 
             // Use the default routing thread pool size.
             try {
-                router = new Router((byte) '1', controlService, 4);
+                router = new Router(runtimeServiceContext.getNodeID(), controlService, 4);
             } catch (Exception finalex) {
                 logger.error("Not recoverable, close out program. " + finalex.getMessage());
                 System.exit(1);

@@ -19,7 +19,6 @@ package org.dsngroup.orcar.runtime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.UUID;
 import java.net.URL;
 import java.io.File;
 
@@ -27,11 +26,12 @@ import java.io.File;
  * The RuntimeServiceContext records the context(configuration) of the RuntimeService.
  */
 public class RuntimeServiceContext {
-    private final UUID runtimeServiceID;
 
-    private int runtimeThreadPoolSize;
+    private static byte nodeID;
 
-    private URL localClassPath;
+    private static int runtimeThreadPoolSize;
+
+    private static URL localClassPath;
 
     private static final Logger logger = LoggerFactory.getLogger(RuntimeService.class);
 
@@ -39,7 +39,7 @@ public class RuntimeServiceContext {
      * Default constructor of RuntimeServiceContext
      */
     public RuntimeServiceContext() {
-        this.runtimeServiceID = UUID.randomUUID();
+        this.nodeID = (byte) '0';
         this.runtimeThreadPoolSize = 4;
         try {
             this.localClassPath = new File("/Users/Tzuchiao/workspace/java/orcar/orcar-sample/target/scala-2.12/classes/").toURI().toURL();
@@ -54,13 +54,21 @@ public class RuntimeServiceContext {
      * @param localClassPath Customized localClassPath.
      */
     public RuntimeServiceContext(int runtimeThreadPoolSize, String localClassPath) {
-        this.runtimeServiceID = UUID.randomUUID();
+        this.nodeID = (byte) '0';
         this.runtimeThreadPoolSize = runtimeThreadPoolSize;
         try {
             this.localClassPath = new File(localClassPath).toURI().toURL();
         } catch (Exception e) {
             logger.error("Local class path translation failed" + e.getMessage());
         }
+    }
+
+    /**
+     * Getter of node id of this node.
+     * @return node id
+     */
+    public byte getNodeID() {
+        return nodeID;
     }
 
     /**

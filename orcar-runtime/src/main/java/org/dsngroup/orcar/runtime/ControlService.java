@@ -18,8 +18,6 @@ package org.dsngroup.orcar.runtime;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.runtime.task.TaskController;
-import org.dsngroup.orcar.runtime.task.TaskEvent;
-import org.dsngroup.orcar.runtime.task.TaskFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ControlService {
 
-    private TaskController taskController;
-
-    private RuntimeScheduler runtimeScheduler;
+    private final TaskController taskController;
 
     private static final Logger logger = LoggerFactory.getLogger(ControlService.class);
 
@@ -41,33 +37,18 @@ public class ControlService {
      */
     public void runNewTask(Byte orchestratorID, String className, String messagePayload) {
         try {
-            // TODO: May be a problem, since Byte will not be actually equivalent object.
-            synchronized (orchestratorID) {
-                // Load Class
-                // Generate a new task event
-                TaskFactory.createTaskEvent(orchestratorID, className, messagePayload, taskController);
-                // The task controller will figure out whether.
-                taskController.requestToFireTask(orchestratorID);
-            }
+            taskController.createTaskEvent(orchestratorID, className, messagePayload);
         } catch (Exception e) {
-            logger.error("Orchestration instantiation failed");
-            logger.error(e.getMessage());
+            logger.error("Error occured in task controller " + e.getMessage());
             // Drop this request.
             return;
         }
     }
 
-    // TODO: The TaskController and ControlService may consider an another instantiate way.
     /**
      * Constructor, which carry with an taskController
      */
     public ControlService(RuntimeServiceContext runtimeServiceContext) {
-        try {
-            runtimeScheduler = new RuntimeScheduler(runtimeServiceContext.getRuntimeThreadPoolSize());
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            System.exit(1);
-        }
-        this.taskController = new TaskController(runtimeScheduler);
+        this.taskController = new TaskController(runtimeServiceContext);
     }
 }

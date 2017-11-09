@@ -26,9 +26,11 @@ import org.slf4j.LoggerFactory;
  */
 public class TaskEvent implements Runnable {
 
+    private final byte taskEventID;
+
     private volatile TaskState taskState;
 
-    private volatile Orchestrator orchestrator;
+    private final Orchestrator orchestrator;
 
     private static final Logger logger = LoggerFactory.getLogger(TaskEvent.class);
 
@@ -39,6 +41,7 @@ public class TaskEvent implements Runnable {
      * @param orchestrator {@link Orchestrator}
      */
     public TaskEvent(Orchestrator orchestrator, TaskController taskController) throws Exception {
+        this.taskEventID = orchestrator.getOrchestratorID();
         this.taskState = TaskState.PENDING;
         this.orchestrator = orchestrator;
         TaskEvent.taskController = taskController;
@@ -50,7 +53,8 @@ public class TaskEvent implements Runnable {
     @Override
     public void run() {
         try {
-            MailBoxer mailBoxer = new MailBoxer(TaskRegistry.pollRegisteredTaskEventMessage(this));
+            MailBoxer mailBoxer = new MailBoxer(
+                    taskController.getTaskRegistry().pollRegisteredTaskEventMessage(taskEventID));
             orchestrator.accept(mailBoxer);
             taskState = TaskState.FINISHED;
             // TODO: Currently fire another task inner, but we should have mechanism to use task controller outside.
@@ -65,6 +69,14 @@ public class TaskEvent implements Runnable {
     }
 
     /**
+     * Get the task event id which is equivalent to the orchestrator id.
+     * @return task event id
+     */
+    public byte getTaskEventID() {
+        return taskEventID;
+    }
+
+    /**
      * Get the current taskState of the task.
      * @return {@link TaskState}
      */
@@ -72,9 +84,14 @@ public class TaskEvent implements Runnable {
         return taskState;
     }
 
+    /**
+     * Set task state on this task event.
+     * @param taskState {@link TaskState}
+     */
     public synchronized void setTaskState(TaskState taskState) {
         this.taskState = taskState;
     }
+
     /**
      * Get the wrapped orchestrator.
      * @return {@link Orchestrator}
