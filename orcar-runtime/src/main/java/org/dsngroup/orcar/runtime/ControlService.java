@@ -41,7 +41,7 @@ public class ControlService {
         try {
             taskController.createTaskEvent(TaskEventIDFactory.createTaskEventID(orchestratorID), className, messagePayload);
         } catch (Exception e) {
-            logger.error("Error occured in task controller " + e.getMessage());
+            logger.error("Error occurred in task controller " + e.getMessage());
             // Drop this request.
             return;
         }

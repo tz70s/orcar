@@ -46,7 +46,7 @@ public final class TaskEventID implements Comparable<TaskEventID>{
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
-        } else if (obj.getClass() == this.getClass()) {
+        } else if (obj instanceof TaskEventID) {
             TaskEventID taskEventID = (TaskEventID) obj;
             if (getPrimitiveTaskEventID() == taskEventID.getPrimitiveTaskEventID()) {
                 return true;

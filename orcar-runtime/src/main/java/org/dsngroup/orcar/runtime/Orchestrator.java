@@ -77,7 +77,7 @@ public class Orchestrator implements Comparable<Orchestrator> {
     public boolean equals(Object another) {
         if (another == null) {
             return false;
-        } else if (another.getClass() != this.getClass()) {
+        } else if (another instanceof Orchestrator) {
             return false;
         } else {
             Orchestrator anotherOrchestrator = (Orchestrator) another;
