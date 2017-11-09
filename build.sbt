@@ -16,6 +16,17 @@ lazy val orcarActor = Project("orcar-actor", file("orcar-actor"))
     )
   )
 
+lazy val orcarMessage = Project("orcar-message", file("orcar-message"))
+  .settings(
+    commonSettings,
+    name := "orcar-message",
+    description := "The message format and parsing utils",
+    libraryDependencies ++= Seq(
+      "com.google.code.gson" % "gson" % "2.8.2",
+      "org.junit.jupiter" % "junit-jupiter-api" % "5.0.1" % Test
+    )
+  )
+
 lazy val orcarEventCache = Project("orcar-eventcache", file("orcar-eventcache"))
   .settings(
     commonSettings,
