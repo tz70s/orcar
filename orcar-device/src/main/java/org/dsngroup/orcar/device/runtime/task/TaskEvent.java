@@ -96,7 +96,7 @@ public class TaskEvent implements Runnable {
      * Get the wrapped orchestrator.
      * @return {@link Orchestrator}
      */
-    public synchronized Orchestrator getOrchestrator() {
+    public Orchestrator getOrchestrator() {
         return orchestrator;
     }
 }

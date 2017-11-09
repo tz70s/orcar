@@ -19,6 +19,9 @@ package org.dsngroup.orcar.device.runtime.task;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Factory to avoid double creation instance of {@link TaskEventID}
+ */
 public class TaskEventIDFactory {
 
     private static Map<Byte, TaskEventID> taskEventIDMap = new ConcurrentHashMap<>();

@@ -16,6 +16,10 @@
 
 package org.dsngroup.orcar.device.runtime.task;
 
+/**
+ * ID wrapper for encapsulating the variation primitive types in the future.
+ * Also, with a safer reentrant lock.
+ */
 public final class TaskEventID implements Comparable<TaskEventID>{
 
     private byte taskEventID;
