@@ -16,17 +16,6 @@ lazy val orcarActor = Project("orcar-actor", file("orcar-actor"))
     )
   )
 
-lazy val orcarMessage = Project("orcar-message", file("orcar-message"))
-  .settings(
-    commonSettings,
-    name := "orcar-message",
-    description := "The message format and parsing utils",
-    libraryDependencies ++= Seq(
-      "com.google.code.gson" % "gson" % "2.8.2",
-      "org.junit.jupiter" % "junit-jupiter-api" % "5.0.1" % Test
-    )
-  )
-
 lazy val orcarEventCache = Project("orcar-eventcache", file("orcar-eventcache"))
   .settings(
     commonSettings,
@@ -55,7 +44,8 @@ lazy val orcarDevice = Project("orcar-device", file("orcar-device"))
       "org.slf4j" % "slf4j-api" % "1.7.25",
       "org.slf4j" % "slf4j-jdk14" % "1.7.25",
       "org.junit.jupiter" % "junit-jupiter-api" % "5.0.1" % Test,
-      "org.eclipse.californium" % "californium-core" % "1.0.4"
+      "org.eclipse.californium" % "californium-core" % "1.0.4",
+      "com.google.code.gson" % "gson" % "2.8.2"
     ),
     mainClass in (Compile, run) := Some("org.dsngroup.orcar.device.test.runtime.RuntimeService"),
     testOptions += Tests.Argument(TestFrameworks.JUnit)

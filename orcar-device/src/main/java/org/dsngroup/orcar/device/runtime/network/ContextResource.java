@@ -17,6 +17,7 @@
 package org.dsngroup.orcar.device.runtime.network;
 
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
+import org.dsngroup.orcar.device.runtime.network.format.RuntimeServiceContextFormat;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 

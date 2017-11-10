@@ -16,6 +16,7 @@
 
 package org.dsngroup.orcar.device.runtime.network;
 
+import org.dsngroup.orcar.device.runtime.network.format.BaseActorFormat;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 
@@ -23,7 +24,7 @@ public class ActorResource extends ConcurrentCoapResource {
 
     @Override
     public void handleGET(CoapExchange exchange) {
-        exchange.accept();
+
         exchange.respond("Get the actor!" +
                 exchange.getRequestOptions().getLocationPathString());
     }
@@ -37,7 +38,15 @@ public class ActorResource extends ConcurrentCoapResource {
 
     @Override
     public void handlePOST(CoapExchange exchange) {
-        exchange.respond("Create an actor of this device!");
+        System.out.println(exchange.getRequestOptions().getLocationPathString());
+        for (byte[] etag: exchange.getRequestOptions().getETags()) {
+            System.out.println(etag.length);
+            String newEtag = new String(etag);
+            System.out.println(newEtag);
+        }
+        BaseActorFormat baseActorFormat = BaseActorFormat.toObject(exchange.getRequestText());
+        System.out.println(baseActorFormat.getClassName());
+        exchange.respond("Create an actor of this device!" + baseActorFormat.getClassName());
         // Existed model
     }
 

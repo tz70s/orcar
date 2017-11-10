@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.test.message;
+package org.dsngroup.orcar.device.test.runtime.network.format;
 
-import org.dsngroup.orcar.message.RuntimeServiceContextFormat;
+import org.dsngroup.orcar.device.runtime.network.format.BaseActorFormat;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RuntimeServiceContextFormatTest {
+public class BaseActorFormatTest {
 
     @Test
     public void stringToBaseActorFormatTest() {
-        String jsonString = "{\"runtime-pool-size\":\"5\"}";
-        RuntimeServiceContextFormat runtimeServiceContextFormat =
-                RuntimeServiceContextFormat.toObject(jsonString);
-        assertEquals(runtimeServiceContextFormat.getRuntimeThreadPoolSize(), 5);
+        String jsonString = "{\"class-name\":\"someclass\"}";
+        BaseActorFormat baseActorFormat = BaseActorFormat.toObject(jsonString);
+        assertEquals(baseActorFormat.getClassName(), "someclass");
     }
 
     @Test
     public void baseActorFormatToStringTest() {
-        RuntimeServiceContextFormat runtimeServiceContextFormat =
-                new RuntimeServiceContextFormat(10);
-        assertEquals("{\"runtime-pool-size\":10}",
-                RuntimeServiceContextFormat.toJsonString(runtimeServiceContextFormat));
+        BaseActorFormat baseActorFormat = new BaseActorFormat("someclass");
+        assertEquals("{\"class-name\":\"someclass\"}", BaseActorFormat.toJsonString(baseActorFormat));
     }
 }

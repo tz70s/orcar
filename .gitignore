@@ -37,3 +37,5 @@ project/plugins/project/
 .lib/
 
 Cargo.lock
+node_modules/
+.package-lock.json
