@@ -17,6 +17,8 @@
 package org.dsngroup.orcar.device.runtime.routing;
 
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
+import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
+import org.dsngroup.orcar.device.runtime.tree.Processor;
 import org.eclipse.californium.core.CoapServer;
 
 /**
@@ -28,20 +30,22 @@ public class EventRouter {
 
     private CoapServer coapServer;
 
-    public EventRouter(RuntimeServiceContext runtimeServiceContext) {
+    private ActorSystem actorSystem;
+
+    public EventRouter(RuntimeServiceContext runtimeServiceContext, ActorSystem actorSystem) {
         this.runtimeServiceContext = runtimeServiceContext;
         this.coapServer = new CoapServer();
         ContextResource contextResource = new ContextResource(runtimeServiceContext);
-        ActorResource actorResource = new ActorResource();
+        this.actorSystem = actorSystem;
+        Processor processor = new Processor(actorSystem);
+        ActorSystem childActorSystem = new ActorSystem(this.actorSystem, "childActorSystem");
+        ActorSystem sibactorSystem = new ActorSystem(this.actorSystem, "sibChildActorSystem");
+        ActorResource actorResource = new ActorResource(actorSystem, processor);
         coapServer.add(contextResource, actorResource);
     }
 
     public EventRouter start() {
         coapServer.start();
         return this;
-    }
-
-    public static void main(String[] args) {
-        EventRouter eventRouter = new EventRouter(new RuntimeServiceContext()).start();
     }
 }

@@ -1,8 +1,6 @@
 let coap = require('coap')
 
-let baseActorFormat = {
-	"class-name": "hello"
-}
+let baseActorFormat = {}
 
 let actorPOST = {
 	host: 'localhost',
@@ -12,9 +10,7 @@ let actorPOST = {
 }
 
 let req = coap.request(actorPOST)
-req.setOption('Location-Path', ['location', 'hello'])
-req.setOption('ETag', 'class-name')
-req.write(JSON.stringify(baseActorFormat))
+req.setOption('Location-Path', ['childActorSystem', 'grandActorSystem'])
 
 req.on('response', function(res) {
 	console.log(res.payload + "")

@@ -22,17 +22,17 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-abstract public class Actor implements Traversable{
+abstract public class Actor implements Traversable {
 
     private static Gson gson = new Gson();
 
-    @SerializedName("parent-actor")
-    private Actor parentActor;
+    //@SerializedName("parent-actor")
+    protected Actor parentActor;
 
     @SerializedName("actor-name")
     private String actorName;
 
-    @SerializedName("child-actors")
+    //@SerializedName("child-actors")
     private Map<String, Actor> childActors;
 
     @Override

@@ -16,6 +16,8 @@
 
 package org.dsngroup.orcar.device.runtime.tree;
 
+import com.google.gson.Gson;
+
 public class ActorSystem extends Actor {
 
     public ActorSystem(ActorSystem actorSystem, String actorSystemName) {
@@ -25,5 +27,25 @@ public class ActorSystem extends Actor {
 
     public void setActorSystemName(String actorSystemName) {
         setActorName(actorSystemName);
+    }
+
+    /**
+     * Serialized runtime service context into json string
+     * @param actorSystem {@link ActorSystem}
+     * @return json string
+     */
+    public static String toJsonString(ActorSystem actorSystem) {
+        Gson gson = new Gson();
+        return gson.toJson(actorSystem);
+    }
+
+    /**
+     * Parse json string to runtime service context format
+     * @param jsonString json string
+     * @return runtime service context format
+     */
+    public static ActorSystem toObject(String jsonString) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonString, ActorSystem.class);
     }
 }

@@ -16,19 +16,28 @@
 
 package org.dsngroup.orcar.device.runtime.routing;
 
-import org.dsngroup.orcar.device.runtime.routing.format.BaseActorFormat;
 import org.dsngroup.orcar.device.runtime.tree.Actor;
+import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
 import org.dsngroup.orcar.device.runtime.tree.Processor;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 
 public class ActorResource extends ConcurrentCoapResource {
 
+    private ActorSystem rootActorSystem;
+
+    private Processor processor;
+
     @Override
     public void handleGET(CoapExchange exchange) {
+        exchange.accept();
         // Get the associated context of an actor
-        Actor actor = Processor.processActorPath(exchange.getRequestOptions().getLocationPath());
-        exchange.respond(Actor.toJsonString(actor));
+        Actor actor = processor.processActorGET(exchange.getRequestOptions().getLocationPath());
+        if (actor != null) {
+            exchange.respond(actor.getActorName());
+        } else {
+            exchange.respond("Not correct path.");
+        }
     }
 
     @Override
@@ -40,24 +49,29 @@ public class ActorResource extends ConcurrentCoapResource {
 
     @Override
     public void handlePOST(CoapExchange exchange) {
-        System.out.println(exchange.getRequestOptions().getLocationPathString());
-        for (byte[] etag: exchange.getRequestOptions().getETags()) {
-            System.out.println(etag.length);
-            String newEtag = new String(etag);
-            System.out.println(newEtag);
+        exchange.accept();
+        Actor actor = processor.processActorPOST(exchange.getRequestOptions().getLocationPath());
+        if (actor != null) {
+            exchange.respond(actor.getActorName());
+        } else {
+            exchange.respond("Not correct path");
         }
-        BaseActorFormat baseActorFormat = BaseActorFormat.toObject(exchange.getRequestText());
-        System.out.println(baseActorFormat.getClassName());
-        exchange.respond("Create an actor of this device!" + baseActorFormat.getClassName());
-        // Existed model
     }
 
     @Override
     public void handleDELETE(CoapExchange exchange) {
-        exchange.respond("Delete an actor of this device!");
+        exchange.accept();
+        boolean result = processor.processActorDELETE(exchange.getRequestOptions().getLocationPath());
+        if (result) {
+            exchange.respond("Successful delete");
+        } else {
+            exchange.respond("Not correct path");
+        }
     }
 
-    public ActorResource() {
+    public ActorResource(ActorSystem actorSystem, Processor processor) {
         super("actor", 2);
+        this.rootActorSystem = actorSystem;
+        this.processor = processor;
     }
 }

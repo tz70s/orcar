@@ -16,6 +16,8 @@
 
 package org.dsngroup.orcar.device.runtime;
 
+import org.dsngroup.orcar.device.runtime.routing.EventRouter;
+import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,10 @@ public class RuntimeService {
     private RuntimeServiceContext runtimeServiceContext;
 
     private ControlService controlService;
+
+    private ActorSystem rootActorSystem;
+
+    private EventRouter eventRouter;
 
     private static final Logger logger = LoggerFactory.getLogger(RuntimeService.class);
 
@@ -40,22 +46,8 @@ public class RuntimeService {
     public RuntimeService(RuntimeServiceContext runtimeServiceContext) {
         this.runtimeServiceContext = runtimeServiceContext;
         this.controlService = new ControlService(runtimeServiceContext);
-
-        /*
-        try {
-            router = new Router(runtimeServiceContext.getNodeID(), controlService,
-                    runtimeServiceContext.getRuntimeThreadPoolSize());
-        } catch (Exception e) {
-            logger.error("Router settings failed. " + e.getMessage());
-            // Use the default routing thread pool size.
-            try {
-                router = new Router(runtimeServiceContext.getNodeID(), controlService, 4);
-            } catch (Exception notRecoverableEx) {
-                logger.error("Not recoverable, close out program. " + notRecoverableEx.getMessage());
-                System.exit(1);
-            }
-        }
-        */
+        this.rootActorSystem = new ActorSystem(null, "root");
+        this.eventRouter = new EventRouter(runtimeServiceContext, rootActorSystem);
     }
 
     /**
@@ -64,6 +56,7 @@ public class RuntimeService {
      */
     public RuntimeService serve() {
         logger.info("Serving runtime!");
+        eventRouter.start();
         return this;
     }
 
