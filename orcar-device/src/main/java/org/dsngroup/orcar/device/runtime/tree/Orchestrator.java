@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.runtime;
+package org.dsngroup.orcar.device.runtime.tree;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.device.runtime.task.TaskEvent;
-import org.dsngroup.orcar.device.runtime.tree.Actor;
 
 public class Orchestrator extends Actor implements Comparable<Orchestrator> {
 

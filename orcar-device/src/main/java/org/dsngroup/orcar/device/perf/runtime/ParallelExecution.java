@@ -32,7 +32,7 @@ public class ParallelExecution {
 
     public ParallelExecution(RuntimeService runtimeService) {
         controlServiceBinding = runtimeService.getControlService();
-        actorSystem = new ActorSystem("ParallelExecution");
+        actorSystem = new ActorSystem(null,"ParallelExecution");
     }
 
     public ParallelExecution perfOnce() throws Exception {

@@ -17,7 +17,7 @@
 package org.dsngroup.orcar.device.runtime.task;
 
 import org.dsngroup.orcar.device.runtime.RuntimeScheduler;
-import org.dsngroup.orcar.device.runtime.Orchestrator;
+import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
 import org.dsngroup.orcar.device.runtime.RuntimeClassLoader;
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
 import org.dsngroup.orcar.device.runtime.tree.Actor;

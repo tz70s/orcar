@@ -24,14 +24,26 @@ import java.util.List;
  */
 public class Processor {
 
-    public static String processActorPath(List<String> locationPath) {
-        // TODO: Find the hierarchical actor
-        Iterator<String> it = locationPath.iterator();
-        while (it.hasNext()) {
-            // Checkout current existed
-            System.out.println(it.next());
-            // Match child
+    private static ActorSystem actorSystem;
+
+    public static Actor processActorPath(List<String> locationPath) {
+        // TODO: May not use null
+        // Find the hierarchy actor
+        if (locationPath.size() == 0) {
+            return null;
         }
-        return locationPath.get(locationPath.size() - 1);
+        Iterator<String> it = locationPath.iterator();
+        if (actorSystem.getActorName() != it.next()) {
+            return null;
+        }
+        Traversable<? extends Actor> traversable = actorSystem;
+        while (it.hasNext()) {
+            // Bind to new traversable
+            traversable = traversable.getChildActor(it.next());
+            if (traversable == null) {
+                return null;
+            }
+        }
+        return (Actor) traversable;
     }
 }

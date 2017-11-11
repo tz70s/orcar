@@ -18,9 +18,9 @@ package org.dsngroup.orcar.device.runtime.tree;
 
 public class ActorSystem extends Actor {
 
-    public ActorSystem(String actorSystemName) {
+    public ActorSystem(ActorSystem actorSystem, String actorSystemName) {
         // TODO: May have a remote parent
-        super(null, actorSystemName);
+        super(actorSystem, actorSystemName);
     }
 
     public void setActorSystemName(String actorSystemName) {

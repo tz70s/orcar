@@ -17,7 +17,7 @@
 package org.dsngroup.orcar.device.runtime.task;
 
 import org.dsngroup.orcar.actor.MailBoxer;
-import org.dsngroup.orcar.device.runtime.Orchestrator;
+import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,7 +16,7 @@
 
 package org.dsngroup.orcar.device.runtime.task;
 
-import org.dsngroup.orcar.device.runtime.Orchestrator;
+import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

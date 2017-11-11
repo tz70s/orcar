@@ -17,6 +17,7 @@
 package org.dsngroup.orcar.device.runtime.routing;
 
 import org.dsngroup.orcar.device.runtime.routing.format.BaseActorFormat;
+import org.dsngroup.orcar.device.runtime.tree.Actor;
 import org.dsngroup.orcar.device.runtime.tree.Processor;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
@@ -26,9 +27,8 @@ public class ActorResource extends ConcurrentCoapResource {
     @Override
     public void handleGET(CoapExchange exchange) {
         // Get the associated context of an actor
-        String actorContext = Processor.processActorPath(exchange.getRequestOptions().getLocationPath());
-        System.out.println(exchange.getRequestOptions().getLocationPath());
-        exchange.respond(actorContext);
+        Actor actor = Processor.processActorPath(exchange.getRequestOptions().getLocationPath());
+        exchange.respond(Actor.toJsonString(actor));
     }
 
     @Override

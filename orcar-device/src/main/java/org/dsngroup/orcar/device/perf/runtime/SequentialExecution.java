@@ -32,7 +32,7 @@ public class SequentialExecution {
 
     public SequentialExecution(RuntimeService runtimeService) {
         controlServiceBinding = runtimeService.getControlService();
-        actorSystem = new ActorSystem("SequentialExecution");
+        actorSystem = new ActorSystem(null,"SequentialExecution");
     }
 
     public SequentialExecution perfOnce() throws Exception {

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.test.runtime;
+package org.dsngroup.orcar.device.test.runtime.tree;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.MailBoxer;
-import org.dsngroup.orcar.device.runtime.Orchestrator;
+import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
+import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -63,5 +65,28 @@ public class OrchestratorTest {
         assertEquals(true, orchestrator.getOrchestratorFunciton() instanceof TestableActor,
                 "The creation of orchestrator function should be correct");
         assertEquals("apple", orchestrator.getActorName());
+    }
+
+    private static ActorSystem rootActorSystem;
+
+    @BeforeAll
+    public static void init() {
+        rootActorSystem = new ActorSystem(null, "root");
+    }
+
+    @Test
+    public void testCreateUnderActorSystem() throws Exception {
+        Orchestrator orchestrator = new Orchestrator(rootActorSystem, "apple", new TestableActor());
+        assertEquals(orchestrator, rootActorSystem.getChildActor("apple"));
+        assertEquals(rootActorSystem, orchestrator.getParentActor());
+    }
+
+    @Test
+    public void testChangeParentBinding() throws Exception {
+        Orchestrator orchestrator = new Orchestrator(rootActorSystem, "banana", new TestableActor());
+        ActorSystem actorSystem = new ActorSystem(rootActorSystem, "anotherActorSystem");
+        actorSystem.addChildActor(orchestrator);
+        assertEquals(actorSystem, orchestrator.getParentActor());
+        assertEquals(orchestrator, actorSystem.getChildActor("banana"));
     }
 }
