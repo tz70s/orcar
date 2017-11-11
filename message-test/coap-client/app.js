@@ -5,12 +5,12 @@ let baseActorFormat = {}
 let actorPOST = {
 	host: 'localhost',
 	pathname: 'actor',
-	method: 'GET',
+	method: 'POST',
 	confirmable: true,
 }
 
 let req = coap.request(actorPOST)
-req.setOption('Location-Path', ['childActorSystem', 'grandActorSystem'])
+req.setOption('Location-Path', ['childActorSystem', 'transientActorSystem'])
 
 req.on('response', function(res) {
 	console.log(res.payload + "")

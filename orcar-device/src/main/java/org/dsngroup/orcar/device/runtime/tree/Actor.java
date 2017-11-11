@@ -26,13 +26,17 @@ abstract public class Actor implements Traversable {
 
     private static Gson gson = new Gson();
 
-    //@SerializedName("parent-actor")
-    protected Actor parentActor;
+    // Do not serialized this to avoid circle reference
+    private transient Actor parentActor;
+
+    // Use this for serialized
+    @SerializedName("parent-actor")
+    private String parentActorString;
 
     @SerializedName("actor-name")
     private String actorName;
 
-    //@SerializedName("child-actors")
+    @SerializedName("child-actors")
     private Map<String, Actor> childActors;
 
     @Override
@@ -45,23 +49,41 @@ abstract public class Actor implements Traversable {
         return parentActor;
     }
 
+    /**
+     * Set the parent actor
+     * @param parentActor parent actor
+     */
     public void setParentActor(Actor parentActor) {
         this.parentActor = parentActor;
+        this.parentActorString = parentActor.getActorName();
     }
 
+    /**
+     * Add child actor of this actor.
+     * @param childActor add child actor.
+     */
     public void addChildActor(Actor childActor) {
         childActors.put(childActor.getActorName(), childActor);
-        // TODO: Should remove from the original parent actor system
+        // Remove from the original parent actor system
         if (childActor.getParentActor() != null) {
             childActor.getParentActor().removeChildActor(childActor);
         }
         childActor.setParentActor(this);
     }
 
+    /**
+     * Remove the child actor.
+     * @param childActor child actor.
+     */
     public void removeChildActor(Actor childActor) {
         childActors.remove(childActor.getActorName(), childActor);
     }
 
+    /**
+     * Constructor of actor
+     * @param parentActor parent actor
+     * @param actorName name of this actor
+     */
     public Actor(Actor parentActor, String actorName) {
         childActors = new ConcurrentHashMap<>();
         this.actorName = actorName;
@@ -72,6 +94,10 @@ abstract public class Actor implements Traversable {
         }
     }
 
+    /**
+     * Get the actor name
+     * @return actor name
+     */
     public String getActorName() {
         return actorName;
     }

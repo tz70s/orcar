@@ -34,7 +34,7 @@ public class ActorResource extends ConcurrentCoapResource {
         // Get the associated context of an actor
         Actor actor = processor.processActorGET(exchange.getRequestOptions().getLocationPath());
         if (actor != null) {
-            exchange.respond(actor.getActorName());
+            exchange.respond(Actor.toJsonString(actor));
         } else {
             exchange.respond("Not correct path.");
         }
@@ -52,7 +52,7 @@ public class ActorResource extends ConcurrentCoapResource {
         exchange.accept();
         Actor actor = processor.processActorPOST(exchange.getRequestOptions().getLocationPath());
         if (actor != null) {
-            exchange.respond(actor.getActorName());
+            exchange.respond(Actor.toJsonString(actor));
         } else {
             exchange.respond("Not correct path");
         }
