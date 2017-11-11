@@ -16,8 +16,8 @@
 
 package org.dsngroup.orcar.device.runtime.network;
 
+import com.google.gson.Gson;
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
-import org.dsngroup.orcar.device.runtime.network.format.RuntimeServiceContextFormat;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
@@ -25,40 +25,54 @@ public class ContextResource extends CoapResource {
 
     private RuntimeServiceContext runtimeServiceContext;
 
+    private static Gson gson;
+
     @Override
     public void handleGET(CoapExchange exchange) {
-        synchronized (runtimeServiceContext) {
-            // TODO: Parse incoming json format and retrieve the desired fields.
-        }
-        // TODO: Send back the desired fields
-        exchange.respond("Get the context of this device!\n");
+        exchange.respond(toJsonString());
     }
 
     @Override
     public void handlePUT(CoapExchange exchange) {
         // For update runtime context
         exchange.accept();
-        synchronized (runtimeServiceContext) {
-            // TODO: Parse incoming json format.
+        RuntimeServiceContext runtimeServiceContext = toObject(exchange.getRequestText());
+
+        // Parse the incoming json fields
+        synchronized (this.runtimeServiceContext) {
+            // TODO: Not correct
+            if (runtimeServiceContext.getLocalClassPath() != null) {
+                this.runtimeServiceContext.setLocalClassPath(runtimeServiceContext.getLocalClassPath());
+            }
+
+            if (runtimeServiceContext.getRuntimeThreadPoolSize() != 0) {
+                this.runtimeServiceContext.setRuntimeThreadPoolSize(runtimeServiceContext.getRuntimeThreadPoolSize());
+            }
         }
-        // TODO: Response with success or not
-        exchange.respond("Update context of this device!");
+        // TODO: Response with success or error message
+        exchange.respond(toJsonString());
     }
 
-    @Override
-    public void handlePOST(CoapExchange exchange) {
-        // TODO: May not need to have this.
-        exchange.respond("Create context of this device!");
+    /**
+     * Serialized runtime service context into json string
+     * @return json string
+     */
+    public String toJsonString() {
+        return gson.toJson(runtimeServiceContext);
     }
 
-    @Override
-    public void handleDELETE(CoapExchange exchange) {
-        // TODO: The delete means the shutdown?
-        exchange.respond("Delete context of this device!");
+    /**
+     * Parse json string to runtime service context format
+     * @param jsonString json string
+     * @return runtime service context format
+     */
+    public static RuntimeServiceContext toObject(String jsonString) {
+        return gson.fromJson(jsonString, RuntimeServiceContext.class);
     }
 
     public ContextResource(RuntimeServiceContext runtimeServiceContext) {
         super("context");
+        gson = new Gson();
         this.runtimeServiceContext = runtimeServiceContext;
     }
 }

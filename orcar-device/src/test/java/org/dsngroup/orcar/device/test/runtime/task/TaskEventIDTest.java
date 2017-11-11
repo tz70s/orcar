@@ -16,8 +16,6 @@
 
 package org.dsngroup.orcar.device.test.runtime.task;
 
-import org.dsngroup.orcar.device.runtime.task.TaskEvent;
-import org.dsngroup.orcar.device.runtime.task.TaskEventID;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

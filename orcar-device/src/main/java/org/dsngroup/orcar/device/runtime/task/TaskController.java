@@ -21,6 +21,7 @@ import org.dsngroup.orcar.device.runtime.message.MessagePayload;
 import org.dsngroup.orcar.device.runtime.Orchestrator;
 import org.dsngroup.orcar.device.runtime.RuntimeClassLoader;
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
+import org.dsngroup.orcar.device.runtime.tree.Actor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,36 +43,41 @@ public class TaskController {
 
     /**
      * Create a task event
-     * @param taskEventID {@link Orchestrator}
+     * @param orchestratorName {@link Orchestrator}
      * @param messagePayload {@link MessagePayload}
      * @throws Exception Need to be actually catch if the repeat orchestrator id.
      */
-    public void createTaskEvent(TaskEventID taskEventID, String className, String messagePayload)
+    public void createTaskEvent(Actor parentActor, String orchestratorName, String className, String messagePayload)
             throws Exception {
-        synchronized (taskEventID) {
-            // Checkout if the task event existed.
-            if (taskRegistry.containTaskEvent(taskEventID)) {
-                taskRegistry.registerExistedTaskEvent(
-                        taskEventID,
-                        messagePayload);
-            } else {
-                Orchestrator orchestrator = new Orchestrator(taskEventID.getPrimitiveTaskEventID(),
+        Orchestrator orchestrator;
+        synchronized (parentActor) {
+            if (parentActor.getChildActor(orchestratorName) == null) {
+                // Not existed
+                orchestrator = new Orchestrator(parentActor, orchestratorName,
                         runtimeClassLoader.loadClass(className));
-                TaskEvent taskEvent = new TaskEvent(taskEventID, orchestrator, this);
+                parentActor.addChildActor(orchestrator);
+                TaskEvent taskEvent = new TaskEvent(orchestrator, this);
                 taskRegistry.registerNewTaskEvent(taskEvent, messagePayload);
+            } else {
+                if (!taskRegistry.containTaskEvent((Orchestrator) parentActor.getChildActor(orchestratorName))) {
+                    throw new Exception("The orchestrator is already a child actor but not registered in task registry");
+                } else {
+                    orchestrator = (Orchestrator) parentActor.getChildActor(orchestratorName);
+                    taskRegistry.registerExistedTaskEvent(orchestrator, messagePayload);
+                }
             }
         }
-        requestToFireTask(taskEventID);
+        requestToFireTask(orchestrator);
     }
 
     /**
      * Request to fire a task.
-     * @param taskEventID {@link TaskEventID}
+     * @param orchestrator {@link Orchestrator}
      * @throws Exception The exception is thrown as an error from request failed, it should be catch.
      */
-    public void requestToFireTask(TaskEventID taskEventID) throws Exception {
+    public void requestToFireTask(Orchestrator orchestrator) throws Exception {
         // TODO: Should create a listener to check the task state?
-        TaskEvent taskEvent = taskRegistry.getTaskEvent(taskEventID);
+        TaskEvent taskEvent = taskRegistry.getTaskEvent(orchestrator);
         // In this step, the task event is already store in the task registry and ready to execute,
         //    or, is current running.
         synchronized (taskEvent) {
@@ -82,7 +88,7 @@ public class TaskController {
             } else {
                 // The task event is not currently running
                 // Checkout whether it has pending task event
-                if (taskRegistry.checkWhetherPendingTaskEvent(taskEventID)) {
+                if (taskRegistry.checkWhetherPendingTaskEvent(orchestrator)) {
                     // scheduled it
                     taskEvent.setTaskState(TaskState.RUNNING);
                     runtimeScheduler.fireTask(taskEvent);

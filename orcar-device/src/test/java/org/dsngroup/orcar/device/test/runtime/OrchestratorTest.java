@@ -33,35 +33,35 @@ public class OrchestratorTest {
 
     @Test
     public void testEqual() throws Exception {
-        Orchestrator orchestrator1 = new Orchestrator((byte) 0, new TestableActor());
-        Orchestrator orchestrator2 = new Orchestrator((byte) 0, new TestableActor());
+        Orchestrator orchestrator1 = new Orchestrator(null, "apple", new TestableActor());
+        Orchestrator orchestrator2 = new Orchestrator(null, "apple", new TestableActor());
 
         // Should be equal
         assertEquals(true, orchestrator1.equals(orchestrator2),
-                "Should equal of two same id orchestrator");
+                "Should equal of two same name orchestrator");
 
-        Orchestrator orchestrator3 = new Orchestrator((byte) 1, new TestableActor());
+        Orchestrator orchestrator3 = new Orchestrator(null, "banana", new TestableActor());
         assertEquals(false, orchestrator1.equals(orchestrator3),
                 "Different id should not be the same");
     }
 
     @Test
     public void testComparable() throws Exception {
-        Orchestrator orchestrator1 = new Orchestrator((byte) 0, new TestableActor());
-        Orchestrator orchestrator2 = new Orchestrator((byte) 1, new TestableActor());
+        Orchestrator orchestrator1 = new Orchestrator(null, "apple", new TestableActor());
+        Orchestrator orchestrator2 = new Orchestrator(null, "azple", new TestableActor());
 
         assertEquals(-1, orchestrator1.compareTo(orchestrator2));
         assertEquals(1, orchestrator2.compareTo(orchestrator1));
 
-        Orchestrator orchestrator3 = new Orchestrator((byte) 0, new TestableActor());
+        Orchestrator orchestrator3 = new Orchestrator(null, "apple", new TestableActor());
         assertEquals(0, orchestrator1.compareTo(orchestrator3));
     }
 
     @Test
     public void testCreation() throws Exception {
-        Orchestrator orchestrator = new Orchestrator((byte) 0, new TestableActor());
+        Orchestrator orchestrator = new Orchestrator(null, "apple", new TestableActor());
         assertEquals(true, orchestrator.getOrchestratorFunciton() instanceof TestableActor,
                 "The creation of orchestrator function should be correct");
-        assertEquals((byte) 0, (byte) orchestrator.getOrchestratorID());
+        assertEquals("apple", orchestrator.getActorName());
     }
 }

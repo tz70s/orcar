@@ -19,20 +19,11 @@ package org.dsngroup.orcar.device.runtime;
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.device.runtime.task.TaskEvent;
+import org.dsngroup.orcar.device.runtime.tree.Actor;
 
-public class Orchestrator implements Comparable<Orchestrator> {
-
-    private Byte orchestratorID;
+public class Orchestrator extends Actor implements Comparable<Orchestrator> {
 
     private FunctionalActor orchestratorFunciton;
-
-    /**
-     * Get the unique OrchestratorID
-     * @return OrchestratorID
-     */
-    public Byte getOrchestratorID() {
-        return orchestratorID;
-    }
 
     /**
      * Propagate to run in {@link TaskEvent}
@@ -45,10 +36,12 @@ public class Orchestrator implements Comparable<Orchestrator> {
 
     /**
      * The orchestrator constructor.
-     * @param orchestratorID The unique id of an orchestrator.
+     * @param parentActor parent actor
+     * @param actorName name of actor
+     * @param orchestratorFunctions {@link FunctionalActor}
      */
-    public Orchestrator(Byte orchestratorID, Object orchestratorFunctions) throws Exception {
-        this.orchestratorID = orchestratorID;
+    public Orchestrator(Actor parentActor, String actorName, Object orchestratorFunctions) throws Exception {
+        super(parentActor, actorName);
         this.orchestratorFunciton = (FunctionalActor) orchestratorFunctions;
     }
 
@@ -60,27 +53,13 @@ public class Orchestrator implements Comparable<Orchestrator> {
         return orchestratorFunciton;
     }
 
-    /**
-     * Override hashCode.
-     * @return hashcode
-     */
-    @Override
-    public int hashCode() {
-        return 301 + 7 * (int) orchestratorID;
-    }
-
-    /**
-     * Override equals for compare.
-     * @param another another orchestrator.
-     * @return boolean
-     */
     @Override
     public boolean equals(Object another) {
         if (another == null) {
             return false;
         } else if (another instanceof Orchestrator) {
             Orchestrator anotherOrchestrator = (Orchestrator) another;
-            if (anotherOrchestrator.orchestratorID == orchestratorID) {
+            if (this.getActorName().equals(anotherOrchestrator.getActorName())) {
                 return true;
             } else {
                 return false;
@@ -90,19 +69,13 @@ public class Orchestrator implements Comparable<Orchestrator> {
         }
     }
 
-    /**
-     * Override compareTo as Comparable
-     * @param another another {@see Orchestrator}
-     * @return compare integer
-     */
+    @Override
+    public int hashCode() {
+        return this.getActorName().hashCode() * 7;
+    }
+
     @Override
     public int compareTo(Orchestrator another) {
-        if (orchestratorID < another.orchestratorID) {
-            return -1;
-        } else if (orchestratorID > another.orchestratorID) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return this.getActorName().compareTo(another.getActorName());
     }
 }

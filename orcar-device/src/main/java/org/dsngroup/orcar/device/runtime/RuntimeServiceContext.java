@@ -16,6 +16,7 @@
 
 package org.dsngroup.orcar.device.runtime;
 
+import com.google.gson.annotations.SerializedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +28,11 @@ import java.io.File;
  */
 public class RuntimeServiceContext {
 
-    private static byte nodeID;
+    @SerializedName("runtime-thread-pool-size")
+    private int runtimeThreadPoolSize;
 
-    private static int runtimeThreadPoolSize;
-
-    private static URL localClassPath;
+    @SerializedName("local-class-path")
+    private URL localClassPath;
 
     private static final Logger logger = LoggerFactory.getLogger(RuntimeService.class);
 
@@ -40,7 +41,6 @@ public class RuntimeServiceContext {
      */
     public RuntimeServiceContext() {
         // TODO: The node id should be configure by remote.
-        this.nodeID = (byte) '0';
         this.runtimeThreadPoolSize = 4;
         try {
             this.localClassPath = new File("/Users/Tzuchiao/workspace/java/orcar/orcar-sample/target/scala-2.12/classes/").toURI().toURL();
@@ -55,21 +55,12 @@ public class RuntimeServiceContext {
      * @param localClassPath Customized localClassPath.
      */
     public RuntimeServiceContext(int runtimeThreadPoolSize, String localClassPath) {
-        this.nodeID = (byte) '0';
         this.runtimeThreadPoolSize = runtimeThreadPoolSize;
         try {
             this.localClassPath = new File(localClassPath).toURI().toURL();
         } catch (Exception e) {
             logger.error("Local class path translation failed" + e.getMessage());
         }
-    }
-
-    /**
-     * Getter of node id of this node.
-     * @return node id
-     */
-    public byte getNodeID() {
-        return nodeID;
     }
 
     /**
@@ -81,10 +72,26 @@ public class RuntimeServiceContext {
     }
 
     /**
+     * Set the runtime thread pool size
+     * @param runtimeThreadPoolSize
+     */
+    public void setRuntimeThreadPoolSize(int runtimeThreadPoolSize) {
+        this.runtimeThreadPoolSize = runtimeThreadPoolSize;
+    }
+
+    /**
      * Getter of localClassPath
      * @return URL of localClassPath
      */
     public URL getLocalClassPath() {
         return localClassPath;
+    }
+
+    /**
+     * Setter of local class path
+     * @param localClassPath local class path
+     */
+    public void setLocalClassPath(URL localClassPath) {
+        this.localClassPath = localClassPath;
     }
 }

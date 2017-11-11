@@ -7,12 +7,12 @@ let baseActorFormat = {
 let actorPOST = {
 	host: 'localhost',
 	pathname: 'actor',
-	method: 'POST',
+	method: 'GET',
 	confirmable: true,
 }
 
 let req = coap.request(actorPOST)
-req.setOption('Location-Path', 'location/actor-level1/actor-level2/actor-level3/hello')
+req.setOption('Location-Path', ['location', 'hello'])
 req.setOption('ETag', 'class-name')
 req.write(JSON.stringify(baseActorFormat))
 

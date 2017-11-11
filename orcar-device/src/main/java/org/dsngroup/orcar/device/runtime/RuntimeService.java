@@ -45,6 +45,7 @@ public class RuntimeService {
         this.runtimeServiceContext = runtimeServiceContext;
         this.controlService = new ControlService(runtimeServiceContext);
 
+        /*
         try {
             router = new Router(runtimeServiceContext.getNodeID(), controlService,
                     runtimeServiceContext.getRuntimeThreadPoolSize());
@@ -58,6 +59,7 @@ public class RuntimeService {
                 System.exit(1);
             }
         }
+        */
     }
 
     /**

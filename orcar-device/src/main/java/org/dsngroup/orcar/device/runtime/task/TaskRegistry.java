@@ -16,6 +16,8 @@
 
 package org.dsngroup.orcar.device.runtime.task;
 
+import org.dsngroup.orcar.device.runtime.Orchestrator;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -25,7 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class TaskRegistry {
 
-    private static Map<TaskEventID, TaskRecordFrame> taskRegistryMemoryPool;
+    private static Map<Orchestrator, TaskRecordFrame> taskRegistryMemoryPool;
 
     /**
      * Data structure for storing a task event and associated message queue.
@@ -70,46 +72,46 @@ public class TaskRegistry {
      * @param messagePayload message payload associated
      */
     public synchronized void registerNewTaskEvent(TaskEvent taskEvent, String messagePayload) throws Exception {
-        taskRegistryMemoryPool.put(taskEvent.getTaskEventID(), new TaskRecordFrame(taskEvent, messagePayload));
+        taskRegistryMemoryPool.put(taskEvent.getOrchestrator(), new TaskRecordFrame(taskEvent, messagePayload));
     }
 
     /**
      * Register a existed task event into taskregistry.
-     * @param taskEventID {@link TaskEvent}
+     * @param orchestrator {@link Orchestrator}
      * @param messagePayload message payload associated
      * @throws Exception
      */
-    public void registerExistedTaskEvent(TaskEventID taskEventID, String messagePayload) throws Exception {
-        taskRegistryMemoryPool.get(taskEventID).putEventWaitingQueue(messagePayload);
+    public void registerExistedTaskEvent(Orchestrator orchestrator, String messagePayload) throws Exception {
+        taskRegistryMemoryPool.get(orchestrator).putEventWaitingQueue(messagePayload);
     }
 
     /**
      * Check whether there is pending task event or not
-     * @param taskEventID {@link TaskEvent}
+     * @param orchestrator {@link Orchestrator}
      * @return true or false
      * @throws Exception
      */
-    public boolean checkWhetherPendingTaskEvent(TaskEventID taskEventID) throws Exception {
-        return taskRegistryMemoryPool.get(taskEventID).checkWhetherPendingEvent();
+    public boolean checkWhetherPendingTaskEvent(Orchestrator orchestrator) throws Exception {
+        return taskRegistryMemoryPool.get(orchestrator).checkWhetherPendingEvent();
     }
 
     /**
      * Poll a registered task event message to do a new task.
-     * @param taskEventID {@link TaskEvent}
+     * @param orchestrator {@link Orchestrator}
      * @return message payload
      * @throws Exception
      */
-    public String pollRegisteredTaskEventMessage(TaskEventID taskEventID) throws Exception {
-        return taskRegistryMemoryPool.get(taskEventID).pollEventWaitingQueue();
+    public String pollRegisteredTaskEventMessage(Orchestrator orchestrator) throws Exception {
+        return taskRegistryMemoryPool.get(orchestrator).pollEventWaitingQueue();
     }
 
     /**
      * Get the current state of an task.
-     * @param taskEventID {@link TaskEvent}
+     * @param orchestrator {@link Orchestrator}
      * @return {@link TaskState}
      */
-    public synchronized TaskState getTaskEventState(TaskEventID taskEventID) throws Exception {
-        TaskEvent taskEvent = taskRegistryMemoryPool.get(taskEventID).getTaskEvent();
+    public synchronized TaskState getTaskEventState(Orchestrator orchestrator) throws Exception {
+        TaskEvent taskEvent = taskRegistryMemoryPool.get(orchestrator).getTaskEvent();
         if (taskEvent == null) {
             throw new Exception("No such task event.");
         }
@@ -118,53 +120,53 @@ public class TaskRegistry {
 
     /**
      * Report contain task event or not
-     * @param taskEventID {@link TaskEvent}
+     * @param orchestrator {@link Orchestrator}
      * @return contains or not
      */
-    public boolean containTaskEvent(TaskEventID taskEventID) {
-        return taskRegistryMemoryPool.containsKey(taskEventID);
+    public boolean containTaskEvent(Orchestrator orchestrator) {
+        return taskRegistryMemoryPool.containsKey(orchestrator);
     }
 
     /**
      * Get task event from orchgestrator id
-     * @param taskEventID {@link TaskEvent}
+     * @param orchestrator {@link Orchestrator}
      * @return {@link TaskEvent}
      * @throws Exception checkout if the task existed or not.
      */
-    public TaskEvent getTaskEvent(TaskEventID taskEventID) throws Exception {
-        if (!containTaskEvent(taskEventID)) {
+    public TaskEvent getTaskEvent(Orchestrator orchestrator) throws Exception {
+        if (!containTaskEvent(orchestrator)) {
             throw new Exception("Should checkout the task event existed or not.");
         }
-        return taskRegistryMemoryPool.get(taskEventID).getTaskEvent();
+        return taskRegistryMemoryPool.get(orchestrator).getTaskEvent();
     }
 
     /**
      * Remove existed task event
-     * @param taskEventID {@link TaskEvent}
+     * @param orchestrator {@link Orchestrator}
      * @throws Exception TODO: Need to properly deal with this
      */
-    public void removeTaskEvent(TaskEventID taskEventID) throws Exception {
-        if (!containTaskEvent(taskEventID)) {
+    public void removeTaskEvent(Orchestrator orchestrator) throws Exception {
+        if (!containTaskEvent(orchestrator)) {
             throw new Exception("Remove an non-existed task event.");
         }
 
-        if (taskRegistryMemoryPool.get(taskEventID).checkWhetherPendingEvent()) {
+        if (taskRegistryMemoryPool.get(orchestrator).checkWhetherPendingEvent()) {
             throw new Exception("Still have works to do in this actor");
         } else {
-            taskRegistryMemoryPool.remove(taskEventID);
+            taskRegistryMemoryPool.remove(orchestrator);
         }
     }
 
     /**
      * Force remove a task event with associated messages.
-     * @param taskEventID {@link TaskEvent}
+     * @param orchestrator {@link TaskEvent}
      * @throws Exception if no such task event.
      */
-    public void forceRemoveTaskEvent(TaskEventID taskEventID) throws Exception {
-         if (!containTaskEvent(taskEventID)) {
+    public void forceRemoveTaskEvent(Orchestrator orchestrator) throws Exception {
+         if (!containTaskEvent(orchestrator)) {
             throw new Exception("Remove an non-existed task event.");
          }
-         taskRegistryMemoryPool.remove(taskEventID);
+         taskRegistryMemoryPool.remove(orchestrator);
     }
 
     /**

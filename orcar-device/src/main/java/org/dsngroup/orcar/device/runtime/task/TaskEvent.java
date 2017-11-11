@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
  */
 public class TaskEvent implements Runnable {
 
-    private final TaskEventID taskEventID;
-
     private volatile TaskState taskState;
 
     private final Orchestrator orchestrator;
@@ -40,8 +38,7 @@ public class TaskEvent implements Runnable {
      * Construct a TaskEvent from the virtual orchestrator. Is package visible, and create via TaskFactory.
      * @param orchestrator {@link Orchestrator}
      */
-    public TaskEvent(TaskEventID taskEventID, Orchestrator orchestrator, TaskController taskController) throws Exception {
-        this.taskEventID = taskEventID;
+    public TaskEvent(Orchestrator orchestrator, TaskController taskController) throws Exception {
         this.taskState = TaskState.PENDING;
         this.orchestrator = orchestrator;
         TaskEvent.taskController = taskController;
@@ -54,26 +51,18 @@ public class TaskEvent implements Runnable {
     public void run() {
         try {
             MailBoxer mailBoxer = new MailBoxer(
-                    taskController.getTaskRegistry().pollRegisteredTaskEventMessage(taskEventID));
+                    taskController.getTaskRegistry().pollRegisteredTaskEventMessage(orchestrator));
             orchestrator.accept(mailBoxer);
             taskState = TaskState.FINISHED;
             // TODO: Currently fire another task inner, but we should have mechanism to use task controller outside.
             // TODO: This will also have consistency problem?
             // TODO: That is, we still have to use completable future for trigger next task?
-            taskController.requestToFireTask(taskEventID);
+            taskController.requestToFireTask(orchestrator);
         } catch (Exception e) {
             logger.error("Internal error of functional actor" + e.getMessage());
             taskState = TaskState.FAILED;
             // TODO: Execute fail state task.
         }
-    }
-
-    /**
-     * Get the task event id which is equivalent to the orchestrator id.
-     * @return task event id
-     */
-    public TaskEventID getTaskEventID() {
-        return taskEventID;
     }
 
     /**

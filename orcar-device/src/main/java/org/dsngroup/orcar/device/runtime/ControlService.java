@@ -17,8 +17,8 @@
 package org.dsngroup.orcar.device.runtime;
 
 import org.dsngroup.orcar.actor.FunctionalActor;
-import org.dsngroup.orcar.device.runtime.task.TaskEventIDFactory;
 import org.dsngroup.orcar.device.runtime.task.TaskController;
+import org.dsngroup.orcar.device.runtime.tree.Actor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +33,14 @@ public class ControlService {
 
     /**
      * The runNewTask of ControlService, instantiate an {@link Orchestrator} and {@link FunctionalActor}
-     * @param orchestratorID The unique ID of orchestrator.
+     * @param parentActor the parent actor
+     * @param orchestratorName this orchestrator's name
      * @param className The className of the class which implements {@link FunctionalActor}.
+     * @param messagePayload message payload
      */
-    public void runNewTask(byte orchestratorID, String className, String messagePayload) {
+    public void runNewTask(Actor parentActor, String orchestratorName, String className, String messagePayload) {
         try {
-            taskController.createTaskEvent(TaskEventIDFactory.createTaskEventID(orchestratorID), className, messagePayload);
+            taskController.createTaskEvent(parentActor, orchestratorName, className, messagePayload);
         } catch (Exception e) {
             logger.error("Error occurred in task controller " + e.getMessage());
             // Drop this request.
