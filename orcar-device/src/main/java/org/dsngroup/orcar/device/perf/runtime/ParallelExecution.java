@@ -18,41 +18,40 @@ package org.dsngroup.orcar.device.perf.runtime;
 
 import org.dsngroup.orcar.device.runtime.ControlService;
 import org.dsngroup.orcar.device.runtime.RuntimeService;
-import org.dsngroup.orcar.device.runtime.routing.Router;
+import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ParallelExecution {
 
-    private Router routerBinding;
-
     private ControlService controlServiceBinding;
 
     private static final Logger logger = LoggerFactory.getLogger(ParallelExecution.class);
 
+    private ActorSystem actorSystem;
+
     public ParallelExecution(RuntimeService runtimeService) {
-        routerBinding = runtimeService.getRouter();
         controlServiceBinding = runtimeService.getControlService();
+        actorSystem = new ActorSystem("ParallelExecution");
     }
 
     public ParallelExecution perfOnce() throws Exception {
-        logger.info("Start sequential execution");
+        logger.info("Start parallel execution");
         // Start running
         // TODO: Can't get the finishing time, currently.
         // TODO: Figure out completable future to track this.
-        /*
         Thread[][] threads = new Thread[10][5];
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 5; j++) {
                 final int num = i;
-                threads[i][j] = new Thread(() -> controlServiceBinding.runNewTask((byte) num,
+                final int payloadNum = j;
+                threads[i][j] = new Thread(() -> controlServiceBinding.runNewTask(actorSystem, "" + num,
                         "org.dsngroup.orcar.device.perf.runtime.actors.CountingActor",
-                        "Actor-" + new Integer(num).toString()));
+                        "{\"Actor\":" + num + ",\"Payload\":" + payloadNum + "}"));
                 threads[i][j].start();
            }
             // In this example, the blocking in the internal thread, will cause starvation.
         }
-        */
         return this;
     }
 }

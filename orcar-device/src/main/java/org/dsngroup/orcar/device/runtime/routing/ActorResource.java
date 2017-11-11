@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.runtime.network;
+package org.dsngroup.orcar.device.runtime.routing;
 
-import org.dsngroup.orcar.device.runtime.network.format.BaseActorFormat;
-import org.dsngroup.orcar.device.runtime.network.format.Processor;
+import org.dsngroup.orcar.device.runtime.routing.format.BaseActorFormat;
+import org.dsngroup.orcar.device.runtime.tree.Processor;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 

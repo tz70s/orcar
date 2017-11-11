@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.runtime.routing;
+package org.dsngroup.orcar.device.runtime.tree;
 
-/**
- * Message forwarding interface.
- */
-public interface Forwarder extends Runnable {
+public class ActorSystem extends Actor {
 
-    /**
-     * Encapsulate run.
-     */
-    @Override
-    default void run() {
-        forward();
+    public ActorSystem(String actorSystemName) {
+        // TODO: May have a remote parent
+        super(null, actorSystemName);
     }
 
-    /**
-     * Forward, need to be implemented.
-     */
-    void forward();
+    public void setActorSystemName(String actorSystemName) {
+        setActorName(actorSystemName);
+    }
 }

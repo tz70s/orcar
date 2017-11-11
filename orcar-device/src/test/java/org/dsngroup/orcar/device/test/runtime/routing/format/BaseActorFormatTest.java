@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.test.runtime.network.format;
+package org.dsngroup.orcar.device.test.runtime.routing.format;
 
-import org.dsngroup.orcar.device.runtime.network.format.BaseActorFormat;
+import org.dsngroup.orcar.device.runtime.routing.format.BaseActorFormat;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -33,7 +33,6 @@ public class RuntimePerfEntry {
         );
         RuntimeService srv = new RuntimeService(ctx).serve();
         // SequentialExecution seq = new SequentialExecution(srv).perfOnce();
-        ParallelExecution par = new ParallelExecution(srv).perfOnce();
-
+        ParallelExecution parallelExecution = new ParallelExecution(srv).perfOnce();
     }
 }

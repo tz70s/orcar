@@ -18,21 +18,21 @@ package org.dsngroup.orcar.device.perf.runtime;
 
 import org.dsngroup.orcar.device.runtime.ControlService;
 import org.dsngroup.orcar.device.runtime.RuntimeService;
-import org.dsngroup.orcar.device.runtime.routing.Router;
+import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SequentialExecution {
 
-    private Router routerBinding;
-
     private ControlService controlServiceBinding;
 
     private static final Logger logger = LoggerFactory.getLogger(SequentialExecution.class);
 
+    private ActorSystem actorSystem;
+
     public SequentialExecution(RuntimeService runtimeService) {
-        routerBinding = runtimeService.getRouter();
         controlServiceBinding = runtimeService.getControlService();
+        actorSystem = new ActorSystem("SequentialExecution");
     }
 
     public SequentialExecution perfOnce() throws Exception {
@@ -42,8 +42,9 @@ public class SequentialExecution {
         // TODO: Figure out completable future to track this.
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 5; j++) {
-                controlServiceBinding.runNewTask((byte) i,
-                        "org.dsngroup.orcar.device.perf.runtime.actors.CountingActor", "Actor-" + new Integer(i).toString());
+                controlServiceBinding.runNewTask(actorSystem, "" + i,
+                        "org.dsngroup.orcar.device.perf.runtime.actors.CountingActor",
+                        "{\"Actor\":" + i + ",\"Payload\":" + j + "}");
             }
             // In this example, the blocking in the internal thread, will cause starvation.
         }

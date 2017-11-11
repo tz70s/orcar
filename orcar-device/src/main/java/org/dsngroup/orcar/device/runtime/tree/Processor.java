@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.runtime.network.format;
+package org.dsngroup.orcar.device.runtime.tree;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

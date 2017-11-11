@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.runtime.network;
+package org.dsngroup.orcar.device.runtime.routing;
 
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
 import org.eclipse.californium.core.CoapServer;

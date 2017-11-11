@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.runtime.network.format;
+package org.dsngroup.orcar.device.runtime.routing.format;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;

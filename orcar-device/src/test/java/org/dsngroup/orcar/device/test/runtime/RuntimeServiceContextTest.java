@@ -28,6 +28,5 @@ public class RuntimeServiceContextTest {
         RuntimeServiceContext runtimeServiceContext = new RuntimeServiceContext();
         assertEquals(4, runtimeServiceContext.getRuntimeThreadPoolSize(),
                 "Should be equal to default thread pool size - 4");
-        assertEquals((byte) '0', runtimeServiceContext.getNodeID(), "Should be equal to the sets node id");
     }
 }

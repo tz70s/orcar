@@ -55,4 +55,12 @@ public class Actor implements Traversable{
     public String getActorName() {
         return actorName;
     }
+
+    /**
+     * Used only for actor system.
+     * @param actorName name
+     */
+    protected void setActorName(String actorName) {
+        this.actorName = actorName;
+    }
 }

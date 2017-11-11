@@ -16,8 +16,6 @@
 
 package org.dsngroup.orcar.device.runtime;
 
-import org.dsngroup.orcar.device.runtime.routing.Router;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +27,6 @@ public class RuntimeService {
     private RuntimeServiceContext runtimeServiceContext;
 
     private ControlService controlService;
-
-    private Router router;
 
     private static final Logger logger = LoggerFactory.getLogger(RuntimeService.class);
 
@@ -80,14 +76,6 @@ public class RuntimeService {
     }
 
     /**
-     * For perf test only.
-     * @return {@link Router}
-     */
-    public Router getRouter() {
-        return router;
-    }
-
-    /**
      * Get the associated runtime service context.
      * @return {@link RuntimeServiceContext}
      */
@@ -97,10 +85,9 @@ public class RuntimeService {
 
     /**
      * Close down the runtime service.
-     * @throws Exception Propagate from {@link Router}
+     * @throws Exception
      */
     public void close() throws Exception {
-        router.close();
     }
 
     public static void main(String[] args) {

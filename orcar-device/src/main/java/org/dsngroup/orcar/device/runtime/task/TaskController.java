@@ -17,7 +17,6 @@
 package org.dsngroup.orcar.device.runtime.task;
 
 import org.dsngroup.orcar.device.runtime.RuntimeScheduler;
-import org.dsngroup.orcar.device.runtime.message.MessagePayload;
 import org.dsngroup.orcar.device.runtime.Orchestrator;
 import org.dsngroup.orcar.device.runtime.RuntimeClassLoader;
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
@@ -44,7 +43,7 @@ public class TaskController {
     /**
      * Create a task event
      * @param orchestratorName {@link Orchestrator}
-     * @param messagePayload {@link MessagePayload}
+     * @param messagePayload message payload
      * @throws Exception Need to be actually catch if the repeat orchestrator id.
      */
     public void createTaskEvent(Actor parentActor, String orchestratorName, String className, String messagePayload)

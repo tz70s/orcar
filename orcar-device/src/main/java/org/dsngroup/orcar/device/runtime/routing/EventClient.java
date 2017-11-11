@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.dsngroup.orcar.device.runtime.routing;
 
-/**
- * This package is the proxy service of a node.
- */
+import org.eclipse.californium.core.CoapClient;
 
-package org.dsngroup.orcar.device.runtime.message;
+public class EventClient {
+
+    private CoapClient coapClient;
+
+    public EventClient() {
+        this.coapClient = new CoapClient("coap://localhost:5683/");
+        String text = coapClient.get().getResponseText();
+    }
+
+    public static void main(String[] args) {
+        EventClient eventClient = new EventClient();
+    }
+}

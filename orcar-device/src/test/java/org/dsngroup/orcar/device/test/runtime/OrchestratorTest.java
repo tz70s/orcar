@@ -48,7 +48,7 @@ public class OrchestratorTest {
     @Test
     public void testComparable() throws Exception {
         Orchestrator orchestrator1 = new Orchestrator(null, "apple", new TestableActor());
-        Orchestrator orchestrator2 = new Orchestrator(null, "azple", new TestableActor());
+        Orchestrator orchestrator2 = new Orchestrator(null, "aqple", new TestableActor());
 
         assertEquals(-1, orchestrator1.compareTo(orchestrator2));
         assertEquals(1, orchestrator2.compareTo(orchestrator1));
