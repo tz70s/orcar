@@ -16,36 +16,50 @@
 
 package org.dsngroup.orcar.device.runtime.routing;
 
+import org.dsngroup.orcar.device.runtime.ControlService;
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
 import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
-import org.dsngroup.orcar.device.runtime.tree.Processor;
 import org.eclipse.californium.core.CoapServer;
 
 /**
  * Trying to use coap instead.
  */
-public class EventRouter {
+public class Router implements AutoCloseable{
 
     private RuntimeServiceContext runtimeServiceContext;
 
     private CoapServer coapServer;
 
+    private ControlService controlService;
+
     private ActorSystem actorSystem;
 
-    public EventRouter(RuntimeServiceContext runtimeServiceContext, ActorSystem actorSystem) {
-        this.runtimeServiceContext = runtimeServiceContext;
-        this.coapServer = new CoapServer();
+    public void initServer() {
+        coapServer = new CoapServer();
         ContextResource contextResource = new ContextResource(runtimeServiceContext);
-        this.actorSystem = actorSystem;
         Processor processor = new Processor(actorSystem);
-        ActorSystem childActorSystem = new ActorSystem(this.actorSystem, "childActorSystem");
-        ActorSystem sibactorSystem = new ActorSystem(this.actorSystem, "sibChildActorSystem");
-        ActorResource actorResource = new ActorResource(actorSystem, processor);
+        ActorResource actorResource = new ActorResource(actorSystem, processor, controlService);
         coapServer.add(contextResource, actorResource);
     }
 
-    public EventRouter start() {
+    public Router(RuntimeServiceContext runtimeServiceContext, ControlService controlService, ActorSystem actorSystem) {
+        this.runtimeServiceContext = runtimeServiceContext;
+        this.controlService = controlService;
+        this.actorSystem = actorSystem;
+
+        ActorSystem childActorSystem = new ActorSystem(this.actorSystem, "childActorSystem");
+        ActorSystem sibactorSystem = new ActorSystem(this.actorSystem, "sibChildActorSystem");
+
+        initServer();
+    }
+
+    public Router start() {
         coapServer.start();
         return this;
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.coapServer.destroy();
     }
 }

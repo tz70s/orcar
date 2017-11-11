@@ -1,17 +1,20 @@
 let coap = require('coap')
 
-let baseActorFormat = {}
+let baseActorFormat = {
+	foo: "bar"
+}
 
 let actorPOST = {
 	host: 'localhost',
 	pathname: 'actor',
-	method: 'POST',
+	method: 'PUT',
 	confirmable: true,
 }
 
 let req = coap.request(actorPOST)
-req.setOption('Location-Path', ['childActorSystem', 'transientActorSystem'])
-
+req.setOption('Location-Path', ['childActorSystem', 'orc1'])
+req.setOption('Location-Query', ['org.dsngroup.orcar.sample.SourceAndPrint'])
+req.write(JSON.stringify(baseActorFormat))
 req.on('response', function(res) {
 	console.log(res.payload + "")
 	res.on('end', function() {

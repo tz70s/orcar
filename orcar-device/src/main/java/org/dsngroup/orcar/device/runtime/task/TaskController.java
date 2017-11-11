@@ -17,10 +17,10 @@
 package org.dsngroup.orcar.device.runtime.task;
 
 import org.dsngroup.orcar.device.runtime.RuntimeScheduler;
-import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
+import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
 import org.dsngroup.orcar.device.runtime.RuntimeClassLoader;
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
-import org.dsngroup.orcar.device.runtime.tree.Actor;
+import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,27 +46,27 @@ public class TaskController {
      * @param messagePayload message payload
      * @throws Exception Need to be actually catch if the repeat orchestrator id.
      */
-    public void createTaskEvent(Actor parentActor, String orchestratorName, String className, String messagePayload)
+    public Orchestrator createTaskEvent(ActorSystem parentActorSystem, String orchestratorName, String className, String messagePayload)
             throws Exception {
         Orchestrator orchestrator;
-        synchronized (parentActor) {
-            if (parentActor.getChildActor(orchestratorName) == null) {
+        synchronized (parentActorSystem) {
+            if (parentActorSystem.getChildActor(orchestratorName) == null) {
                 // Not existed
-                orchestrator = new Orchestrator(parentActor, orchestratorName,
+                orchestrator = new Orchestrator(parentActorSystem, orchestratorName,
                         runtimeClassLoader.loadClass(className));
-                parentActor.addChildActor(orchestrator);
                 TaskEvent taskEvent = new TaskEvent(orchestrator, this);
                 taskRegistry.registerNewTaskEvent(taskEvent, messagePayload);
             } else {
-                if (!taskRegistry.containTaskEvent((Orchestrator) parentActor.getChildActor(orchestratorName))) {
+                if (!taskRegistry.containTaskEvent((Orchestrator) parentActorSystem.getChildActor(orchestratorName))) {
                     throw new Exception("The orchestrator is already a child actor but not registered in task registry");
                 } else {
-                    orchestrator = (Orchestrator) parentActor.getChildActor(orchestratorName);
+                    orchestrator = (Orchestrator) parentActorSystem.getChildActor(orchestratorName);
                     taskRegistry.registerExistedTaskEvent(orchestrator, messagePayload);
                 }
             }
         }
         requestToFireTask(orchestrator);
+        return orchestrator;
     }
 
     /**

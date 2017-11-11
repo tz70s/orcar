@@ -1,5 +1,5 @@
 # orcar
-An orchestrator-style runtime for IoT edge devices and cloudlets
+An orchestrator-style runtime for IoT edge devices.
 
 ## (Current) Execution
 
@@ -17,5 +17,3 @@ sbt
 > project orcar-apiserver
 > run
 ```
-
-

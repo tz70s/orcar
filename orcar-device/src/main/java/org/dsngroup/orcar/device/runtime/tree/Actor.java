@@ -19,15 +19,12 @@ package org.dsngroup.orcar.device.runtime.tree;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 abstract public class Actor implements Traversable {
 
     private static Gson gson = new Gson();
 
     // Do not serialized this to avoid circle reference
-    private transient Actor parentActor;
+    private transient ActorSystem parentActor;
 
     // Use this for serialized
     @SerializedName("parent-actor")
@@ -36,47 +33,21 @@ abstract public class Actor implements Traversable {
     @SerializedName("actor-name")
     private String actorName;
 
-    @SerializedName("child-actors")
-    private Map<String, Actor> childActors;
-
     @Override
-    public Actor getChildActor(String childName) {
-        return childActors.get(childName);
-    }
-
-    @Override
-    public Actor getParentActor() {
+    public ActorSystem getParentActor() {
         return parentActor;
     }
+
+    @Override
+    abstract public Actor getChildActor(String childName);
 
     /**
      * Set the parent actor
      * @param parentActor parent actor
      */
-    public void setParentActor(Actor parentActor) {
+    public void setParentActor(ActorSystem parentActor) {
         this.parentActor = parentActor;
         this.parentActorString = parentActor.getActorName();
-    }
-
-    /**
-     * Add child actor of this actor.
-     * @param childActor add child actor.
-     */
-    public void addChildActor(Actor childActor) {
-        childActors.put(childActor.getActorName(), childActor);
-        // Remove from the original parent actor system
-        if (childActor.getParentActor() != null) {
-            childActor.getParentActor().removeChildActor(childActor);
-        }
-        childActor.setParentActor(this);
-    }
-
-    /**
-     * Remove the child actor.
-     * @param childActor child actor.
-     */
-    public void removeChildActor(Actor childActor) {
-        childActors.remove(childActor.getActorName(), childActor);
     }
 
     /**
@@ -84,8 +55,7 @@ abstract public class Actor implements Traversable {
      * @param parentActor parent actor
      * @param actorName name of this actor
      */
-    public Actor(Actor parentActor, String actorName) {
-        childActors = new ConcurrentHashMap<>();
+    public Actor(ActorSystem parentActor, String actorName) {
         this.actorName = actorName;
         if (parentActor != null) {
             parentActor.addChildActor(this);
@@ -106,7 +76,7 @@ abstract public class Actor implements Traversable {
      * Used only for actor system.
      * @param actorName name
      */
-    protected void setActorName(String actorName) {
+    void setActorName(String actorName) {
         this.actorName = actorName;
     }
 

@@ -25,7 +25,7 @@ public class ContextResource extends CoapResource {
 
     private RuntimeServiceContext runtimeServiceContext;
 
-    private static Gson gson;
+    private static Gson gson = new Gson();
 
     @Override
     public void handleGET(CoapExchange exchange) {
@@ -72,7 +72,6 @@ public class ContextResource extends CoapResource {
 
     public ContextResource(RuntimeServiceContext runtimeServiceContext) {
         super("context");
-        gson = new Gson();
         this.runtimeServiceContext = runtimeServiceContext;
     }
 }

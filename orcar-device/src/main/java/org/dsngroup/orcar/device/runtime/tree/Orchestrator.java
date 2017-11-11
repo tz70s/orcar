@@ -16,11 +16,15 @@
 
 package org.dsngroup.orcar.device.runtime.tree;
 
+import com.google.gson.annotations.SerializedName;
 import org.dsngroup.orcar.actor.FunctionalActor;
 import org.dsngroup.orcar.actor.MailBoxer;
 import org.dsngroup.orcar.device.runtime.task.TaskEvent;
 
 public class Orchestrator extends Actor implements Comparable<Orchestrator> {
+
+    @SerializedName("actor-type")
+    private final String actorType = "Orchestrator";
 
     private FunctionalActor orchestratorFunciton;
 
@@ -33,14 +37,20 @@ public class Orchestrator extends Actor implements Comparable<Orchestrator> {
         orchestratorFunciton.accept(mailBoxer);
     }
 
+    @Override
+    public Actor getChildActor(String childName) {
+        return null;
+    }
+
     /**
      * The orchestrator constructor.
-     * @param parentActor parent actor
+     * @param parentActorSystem parent actor system
      * @param actorName name of actor
      * @param orchestratorFunctions {@link FunctionalActor}
      */
-    public Orchestrator(Actor parentActor, String actorName, Object orchestratorFunctions) throws Exception {
-        super(parentActor, actorName);
+    public Orchestrator(ActorSystem parentActorSystem, String actorName, Object orchestratorFunctions) throws Exception {
+        super(parentActorSystem, actorName);
+        // TODO: Add to parent
         this.orchestratorFunciton = (FunctionalActor) orchestratorFunctions;
     }
 

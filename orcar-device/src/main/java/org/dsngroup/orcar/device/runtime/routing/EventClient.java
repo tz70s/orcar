@@ -16,17 +16,36 @@
 package org.dsngroup.orcar.device.runtime.routing;
 
 import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapHandler;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.CoAP;
+import org.eclipse.californium.core.coap.OptionSet;
+import org.eclipse.californium.core.coap.Request;
 
 public class EventClient {
 
     private CoapClient coapClient;
 
     public EventClient() {
-        this.coapClient = new CoapClient("coap://localhost:5683/");
-        String text = coapClient.get().getResponseText();
+        this.coapClient = new CoapClient("coap://localhost:5683/actor");
+
+        Request request = new Request(CoAP.Code.GET);
+        request.setOptions(new OptionSet().addLocationPath("sibChildActorSystem"));
+
+        coapClient.advanced(new CoapHandler() {
+            @Override
+            public void onLoad(CoapResponse response) {
+                System.out.println(response.getResponseText());
+            }
+            @Override
+            public void onError() {
+                System.out.println("Error");
+            }
+        }, request);
     }
 
     public static void main(String[] args) {
         EventClient eventClient = new EventClient();
+        while (true);
     }
 }
