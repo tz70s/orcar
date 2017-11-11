@@ -16,7 +16,7 @@
 
 package org.dsngroup.orcar.device.runtime;
 
-import org.dsngroup.orcar.device.runtime.routing.EventRouter;
+import org.dsngroup.orcar.device.runtime.routing.Router;
 import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The RuntimeService is a entry point of orcar.
  */
-public class RuntimeService {
+public class RuntimeService implements AutoCloseable {
 
     private RuntimeServiceContext runtimeServiceContext;
 
@@ -32,7 +32,7 @@ public class RuntimeService {
 
     private ActorSystem rootActorSystem;
 
-    private EventRouter eventRouter;
+    private Router router;
 
     private static final Logger logger = LoggerFactory.getLogger(RuntimeService.class);
 
@@ -47,7 +47,7 @@ public class RuntimeService {
         this.runtimeServiceContext = runtimeServiceContext;
         this.controlService = new ControlService(runtimeServiceContext);
         this.rootActorSystem = new ActorSystem(null, "root");
-        this.eventRouter = new EventRouter(runtimeServiceContext, rootActorSystem);
+        this.router = new Router(runtimeServiceContext, controlService, rootActorSystem);
     }
 
     /**
@@ -56,7 +56,7 @@ public class RuntimeService {
      */
     public RuntimeService serve() {
         logger.info("Serving runtime!");
-        eventRouter.start();
+        router.start();
         return this;
     }
 
@@ -80,7 +80,9 @@ public class RuntimeService {
      * Close down the runtime service.
      * @throws Exception
      */
+    @Override
     public void close() throws Exception {
+        router.close();
     }
 
     public static void main(String[] args) {

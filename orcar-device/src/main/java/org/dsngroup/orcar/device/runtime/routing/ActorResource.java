@@ -16,9 +16,10 @@
 
 package org.dsngroup.orcar.device.runtime.routing;
 
+import org.dsngroup.orcar.device.runtime.ControlService;
 import org.dsngroup.orcar.device.runtime.tree.Actor;
 import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
-import org.dsngroup.orcar.device.runtime.tree.Processor;
+import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 
@@ -28,50 +29,94 @@ public class ActorResource extends ConcurrentCoapResource {
 
     private Processor processor;
 
+    private ControlService controlService;
+
+    /**
+     * Use get to retrieve the context of an actor (a.k.a actor-system or orchestrator)
+     * @param exchange
+     */
     @Override
     public void handleGET(CoapExchange exchange) {
         exchange.accept();
         // Get the associated context of an actor
-        Actor actor = processor.processActorGET(exchange.getRequestOptions().getLocationPath());
+        Actor actor = processor.processActorGET(exchange);
         if (actor != null) {
             exchange.respond(Actor.toJsonString(actor));
         } else {
-            exchange.respond("Not correct path.");
+            exchange.respond(errorMessage("GET", "Invalid Location-Path."));
         }
     }
 
     @Override
     public void handlePUT(CoapExchange exchange) {
         exchange.accept();
-        String query = exchange.getRequestOptions().getLocationQueryString();
-        exchange.respond("Update an actor with data of this device!" + exchange.getRequestOptions().getUriQueryString());
+
+        ActorSystem parentActorSystem;
+
+        // Use the first etag as class name
+        String className = processor.processLocationQuery(exchange);
+        if (className == "") {
+            exchange.respond(errorMessage("PUT", "Doesn't support in Actor-System, " +
+                    "and Orchestrator must carry with Location Query"));
+            return;
+        } else {
+            Object[] tuple = processor.processActorPUT(exchange);
+            if (tuple == null) {
+                exchange.respond(errorMessage("PUT", "Invalid Location-Path."));
+            } else {
+                parentActorSystem = (ActorSystem) tuple[0];
+                String orchestratorName = (String) tuple[1];
+                // Call control service
+                Orchestrator orchestrator = controlService.runNewTask(parentActorSystem, orchestratorName, className, exchange.getRequestText());
+                exchange.respond(successMessage("PUT", Actor.toJsonString(orchestrator)));
+            }
+        }
     }
 
     @Override
     public void handlePOST(CoapExchange exchange) {
         exchange.accept();
-        Actor actor = processor.processActorPOST(exchange.getRequestOptions().getLocationPath());
+        Actor actor = processor.processActorPOST(exchange);
         if (actor != null) {
             exchange.respond(Actor.toJsonString(actor));
         } else {
-            exchange.respond("Not correct path");
+            exchange.respond(errorMessage("POST", "Invalid Location-Path."));
         }
     }
 
     @Override
     public void handleDELETE(CoapExchange exchange) {
         exchange.accept();
-        boolean result = processor.processActorDELETE(exchange.getRequestOptions().getLocationPath());
+        boolean result = processor.processActorDELETE(exchange);
         if (result) {
             exchange.respond("Successful delete");
         } else {
-            exchange.respond("Not correct path");
+            exchange.respond(errorMessage("DELETE", "Invalid Location-Path."));
         }
     }
 
-    public ActorResource(ActorSystem actorSystem, Processor processor) {
+    private String successMessage(String method, String message) {
+        StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder.append("Successful ")
+                .append(method)
+                .append(": ")
+                .append(message)
+                .toString();
+    }
+
+    private String errorMessage(String method, String message) {
+        StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder.append("Error ")
+                .append(method)
+                .append(": ")
+                .append(message)
+                .toString();
+    }
+
+    public ActorResource(ActorSystem actorSystem, Processor processor, ControlService controlService) {
         super("actor", 2);
         this.rootActorSystem = actorSystem;
         this.processor = processor;
+        this.controlService = controlService;
     }
 }

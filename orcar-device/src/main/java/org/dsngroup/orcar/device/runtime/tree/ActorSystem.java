@@ -16,11 +16,50 @@
 
 package org.dsngroup.orcar.device.runtime.tree;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class ActorSystem extends Actor {
 
+    @SerializedName("actor-type")
+    private final String actorType = "ActorSystem";
+
+    @SerializedName("child-actors")
+    private Map<String, Actor> childActors;
+
+    @Override
+    public Actor getChildActor(String childName) {
+        return childActors.get(childName);
+    }
+
+    /**
+     * Add child actor of this actor.
+     * @param childActor add child actor.
+     */
+    public void addChildActor(Actor childActor) {
+        childActors.put(childActor.getActorName(), childActor);
+        // Remove from the original parent actor system
+        if (childActor.getParentActor() != null) {
+            childActor.getParentActor().removeChildActor(childActor);
+        }
+        childActor.setParentActor(this);
+    }
+
+    /**
+     * Remove the child actor.
+     * @param childActor child actor.
+     */
+    public void removeChildActor(Actor childActor) {
+        childActors.remove(childActor.getActorName(), childActor);
+    }
+
+
     public ActorSystem(ActorSystem actorSystem, String actorSystemName) {
-        // TODO: May have a remote parent
         super(actorSystem, actorSystemName);
+        // TODO: May have a remote parent
+        childActors = new ConcurrentHashMap<>();
     }
 
     public void setActorSystemName(String actorSystemName) {

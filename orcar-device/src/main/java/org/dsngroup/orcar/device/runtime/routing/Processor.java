@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-package org.dsngroup.orcar.device.runtime.tree;
+package org.dsngroup.orcar.device.runtime.routing;
+
+import org.dsngroup.orcar.device.runtime.tree.Actor;
+import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
+import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
+import org.dsngroup.orcar.device.runtime.tree.Traversable;
+import org.eclipse.californium.core.server.resources.CoapExchange;
 
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +32,8 @@ public class Processor {
 
     private ActorSystem actorSystem;
 
-    public Actor processActorGET(List<String> locationPath) {
+    public Actor processActorGET(CoapExchange coapExchange) {
+        List<String> locationPath = coapExchange.getRequestOptions().getLocationPath();
 
         // Find the hierarchy actor
         if (locationPath.isEmpty()) {
@@ -38,16 +45,51 @@ public class Processor {
         Traversable<? extends Actor> traversable = actorSystem;
         while (it.hasNext()) {
             // Bind to new traversable
+            Traversable<? extends Actor> previous = traversable;
             traversable = traversable.getChildActor(it.next());
             if (traversable == null) {
+                if (previous instanceof Orchestrator) {
+                    return (Actor) previous;
+                }
                 return null;
             }
         }
         return (Actor) traversable;
     }
 
-    public Actor processActorPOST(List<String> locationPath) {
+    public Object[] processActorPUT(CoapExchange coapExchange) {
 
+        List<String> locationPath = coapExchange.getRequestOptions().getLocationPath();
+        // Find the hierarchy actor
+        if (locationPath.isEmpty()) {
+            return null;
+        }
+
+        Iterator<String> it = locationPath.iterator();
+
+        Traversable<? extends Actor> traversable = actorSystem;
+        while (it.hasNext()) {
+            // Bind to new traversable
+            Traversable<? extends Actor> previous = traversable;
+            String current = it.next();
+            traversable = previous.getChildActor(current);
+            if (traversable == null) {
+                if (previous instanceof ActorSystem) {
+                    Object[] tuple = new Object[2];
+                    tuple[0] = previous;
+                    tuple[1] = current;
+                    return tuple;
+                } else {
+                    // Drop, can't mount actor under orchestrator.
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Actor processActorPOST(CoapExchange coapExchange) {
+        List<String> locationPath = coapExchange.getRequestOptions().getLocationPath();
         // Find the hierarchy actor
         if (locationPath.isEmpty()) {
             return actorSystem;
@@ -76,7 +118,9 @@ public class Processor {
         return null;
     }
 
-    public boolean processActorDELETE(List<String> locationPath) {
+
+    public boolean processActorDELETE(CoapExchange coapExchange) {
+        List<String> locationPath = coapExchange.getRequestOptions().getLocationPath();
 
         // Find the hierarchy actor
         if (locationPath.isEmpty()) {
@@ -100,6 +144,15 @@ public class Processor {
         }
 
         return false;
+    }
+
+    public String processLocationQuery(CoapExchange coapExchange) {
+        String className = "";
+        for (String value: coapExchange.getRequestOptions().getLocationQuery()) {
+            className = value;
+            break;
+        }
+        return className;
     }
 
     public Processor(ActorSystem actorSystem) {
