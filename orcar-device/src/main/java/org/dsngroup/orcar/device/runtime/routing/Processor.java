@@ -68,10 +68,11 @@ public class Processor {
         Iterator<String> it = locationPath.iterator();
 
         Traversable<? extends Actor> traversable = actorSystem;
+        // Bind to new traversable
+        Traversable<? extends Actor> previous = traversable;
+        String current = "";
         while (it.hasNext()) {
-            // Bind to new traversable
-            Traversable<? extends Actor> previous = traversable;
-            String current = it.next();
+            current = it.next();
             traversable = previous.getChildActor(current);
             if (traversable == null) {
                 if (previous instanceof ActorSystem) {
@@ -80,11 +81,18 @@ public class Processor {
                     tuple[1] = current;
                     return tuple;
                 } else {
-                    // Drop, can't mount actor under orchestrator.
                     return null;
                 }
             }
         }
+
+        if (traversable instanceof Orchestrator) {
+            Object[] tuple = new Object[2];
+            tuple[0] = traversable.getParentActor();
+            tuple[1] = current;
+            return tuple;
+        }
+
         return null;
     }
 

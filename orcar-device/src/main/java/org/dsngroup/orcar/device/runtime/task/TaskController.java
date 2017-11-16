@@ -18,9 +18,9 @@ package org.dsngroup.orcar.device.runtime.task;
 
 import org.dsngroup.orcar.device.runtime.RuntimeScheduler;
 import org.dsngroup.orcar.device.runtime.tree.ActorSystem;
-import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
 import org.dsngroup.orcar.device.runtime.RuntimeClassLoader;
 import org.dsngroup.orcar.device.runtime.RuntimeServiceContext;
+import org.dsngroup.orcar.device.runtime.tree.Orchestrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,6 @@ public class TaskController {
                 // Not existed
                 orchestrator = new Orchestrator(parentActorSystem, orchestratorName,
                         runtimeClassLoader.loadClass(className));
-                parentActorSystem.addChildActor(orchestrator);
                 TaskEvent taskEvent = new TaskEvent(orchestrator, this);
                 taskRegistry.registerNewTaskEvent(taskEvent, messagePayload);
             } else {
